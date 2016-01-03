@@ -1,5 +1,11 @@
 using ClassicalCiphers
-using Base.Test
 
-# write your own tests here
-@test 1 == 1
+tests = ["vigenere", "monoalphabetic", "solitaire"]
+
+println("Running tests:")
+
+for t in tests
+    test_fn = "$t.jl"
+    println(" * $test_fn")
+    include(test_fn)
+end

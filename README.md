@@ -13,7 +13,7 @@ The Solitaire cipher is included for completeness, though it is perhaps not stri
 * [Solitaire]
 
 [Caesar]: https://en.wikipedia.org/wiki/Caesar_cipher
-[Vigenere]: https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher
+[Vigenère]: https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher
 [Monoalphabetic substitution]: https://en.wikipedia.org/wiki/Substitution_cipher
 [Solitaire]: https://en.wikipedia.org/wiki/Solitaire_(cipher)
 

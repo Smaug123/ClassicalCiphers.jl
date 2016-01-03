@@ -1,8 +1,30 @@
+"""
+Encrypts the given plaintext according to the monoalphabetic substitution cipher.
+The key may be given as a Dict of replacements {'a' => 'b', 'c' => 'd'}, etc,
+or as a 26-length string "keystringbcdfhjlmopqruvwxz", which is shorthand for
+{'a' => 'k', 'e' => 'b', …}
+
+If the key is given as a string, it is assumed that each character occurs only
+once, and the string is converted to lowercase.
+If the key is given as a Dict, the only substitutions made are those in the Dict;
+in particular, the string is not converted to lowercase automatically.
+"""
 function encrypt_monoalphabetic(plaintext, key::Dict)
   # plaintext: string; key: dictionary of {'a' => 'b'}, etc, for replacing 'a' with 'b'
   join([(i in keys(key) ? key[i] : i) for i in plaintext], "")
 end
 
+"""
+Decrypts the given ciphertext according to the monoalphabetic substitution cipher.
+The key may be given as a Dict of replacements {'a' => 'b', 'c' => 'd'}, etc,
+or as a 26-length string "keystringbcdfhjlmopqruvwxz", which is shorthand for
+{'a' => 'k', 'e' => 'b', …}
+
+If the key is given as a string, it is assumed that each character occurs only
+once, and the string is converted to lowercase.
+If the key is given as a Dict, the only substitutions made are those in the Dict;
+in particular, the string is not converted to lowercase automatically.
+"""
 function decrypt_monoalphabetic(ciphertext, key::Dict)
   # ciphertext: string; key: dictionary of {'a' => 'b'}, etc, where the plaintext 'a' was
   # replaced by ciphertext 'b'. No character should appear more than once

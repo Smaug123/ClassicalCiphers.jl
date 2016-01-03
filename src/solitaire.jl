@@ -82,6 +82,12 @@ function Base.next(b::SolitaireKeyStream, state)
 end
 Base.done(b::SolitaireKeyStream, state) = false
 
+"""
+Encrypts the given plaintext according to the Solitaire cipher.
+The key may be given either as a vector initial deck, where the cards are
+1 through 54 (the two jokers being 53, 54), or as a string.
+Schneier's keying algorithm is used to key the deck if the key is a string.
+"""
 function encrypt_solitaire(string, initialDeck::Vector)
   inp = uppercase(letters_only(string))
   ans = ""
@@ -96,6 +102,12 @@ function encrypt_solitaire(string, initialDeck::Vector)
   return ans
 end
 
+"""
+Decrypts the given ciphertext according to the Solitaire cipher.
+The key may be given either as a vector initial deck, where the cards are
+1 through 54 (the two jokers being 53, 54), or as a string.
+Schneier's keying algorithm is used to key the deck if the key is a string.
+"""
 function decrypt_solitaire(string, initialDeck::Vector)
   inp = uppercase(letters_only(string))
   ans = ""

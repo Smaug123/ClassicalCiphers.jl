@@ -64,13 +64,35 @@ Performs a trigram analysis on the input string, to determine how close it
 is to English. That is, splits the input string into groups of three letters,
 and assigns a score based on the frequency of the trigrams in true English.
 """
-function string_fitness(input)
-  str = uppercase(letters_only(input))
+function string_fitness(input; alreadystripped=false)
+  if !alreadystripped
+    str = letters_only(input)
+  else
+    str = input
+  end
+
+  str = uppercase(str)
 
   ans = 0
   for i in 1:(length(str)-2)
     ans += get(trigram_fitnesses, str[i:i+2], 0)
   end
 
+  log(ans/length(str))
+end
+
+"""
+Finds the frequencies of all characters in the input string, returning a Dict
+of 'a' => 4, for instance. Uppercase characters are considered distinct from lowercase.
+"""
+function frequencies(input)
+  ans = Dict{Char, Integer}()
+  for i in input
+    if haskey(ans, i)
+      ans[i] += 1
+    else
+      ans[i] = 0
+    end
+  end
   ans
 end

@@ -40,3 +40,37 @@ function splitBy(arr, func)
   end
   currans
 end
+
+function get_trigram_fitnesses()
+  # The quadgrams file we use is licensed MIT, as per
+  # http://practicalcryptography.com/cryptanalysis/text-characterisation/quadgrams/#comment-2007984751
+  f = open(joinpath(dirname(Base.source_path()), "english_trigrams.txt"))
+  lines = readlines(f)
+  dict = Dict{AbstractString, Integer}()
+
+  for l in lines
+    (ngram, fitness) = split(l)
+    dict[ngram] = parse(fitness)
+  end
+
+  close(f)
+  dict
+end
+
+trigram_fitnesses = get_trigram_fitnesses()
+
+"""
+Performs a trigram analysis on the input string, to determine how close it
+is to English. That is, splits the input string into groups of three letters,
+and assigns a score based on the frequency of the trigrams in true English.
+"""
+function string_fitness(input)
+  str = uppercase(letters_only(input))
+
+  ans = 0
+  for i in 1:(length(str)-2)
+    ans += get(trigram_fitnesses, str[i:i+2], 0)
+  end
+
+  ans
+end

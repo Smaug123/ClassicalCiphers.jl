@@ -24,3 +24,16 @@ function decrypt_caesar(ciphertext, key::Integer)
   key = ((key-1) % 26) + 1
   lowercase(encrypt_caesar(ciphertext, 26-key))
 end
+
+"""
+Cracks the given ciphertext according to the Caesar cipher.
+Returns (plaintext, key::Integer), such that encrypt_caesar(plaintext, key)
+would return ciphertext.
+
+Converts the input to lowercase.
+"""
+function crack_caesar(ciphertext)
+  texts = [(decrypt_caesar(ciphertext,key), key) for key in 1:26]
+  texts = sort(texts, by=(x -> string_fitness(first(x))))
+  texts[end]
+end

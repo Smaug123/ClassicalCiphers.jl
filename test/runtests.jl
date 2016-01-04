@@ -1,6 +1,6 @@
 using ClassicalCiphers
 
-tests = ["vigenere", "monoalphabetic", "solitaire"]
+tests = ["vigenere", "monoalphabetic", "solitaire", "caesar"]
 
 println("Running tests:")
 

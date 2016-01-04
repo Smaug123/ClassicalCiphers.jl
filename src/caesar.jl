@@ -13,7 +13,7 @@ function encrypt_caesar(plaintext, key::Integer)
 end
 
 """
-Decrypts the given plaintext according to the Caesar cipher.
+Decrypts the given ciphertext according to the Caesar cipher.
 The key is given as an integer, being the offset of each character;
 so decrypt_caesar("abcd", 1) == "zabc".
 

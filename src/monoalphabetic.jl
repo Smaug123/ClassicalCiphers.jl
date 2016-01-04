@@ -35,9 +35,8 @@ end
 function encrypt_monoalphabetic(plaintext, key::AbstractString)
   # plaintext: string; key: string of length 26, first character is the image of 'a', etc
   # working in lowercase; key is assumed only to have each element appearing once
-  # and to be in lowercase.
-  dict = Dict{Char, Char}(map(x -> (x[1]+96, x[2]), enumerate(key)))
-  encrypt_monoalphabetic(lowercase(plaintext), dict)
+  dict = Dict{Char, Char}(map(x -> (x[1]+64, x[2]), enumerate(uppercase(key))))
+  encrypt_monoalphabetic(uppercase(plaintext), dict)
 end
 
 function decrypt_monoalphabetic(ciphertext, key::AbstractString)

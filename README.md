@@ -43,6 +43,12 @@ decrypt_caesar("Khoor, Zruog!", 3)
 
 Likewise, `decrypt_caesar` turns everything lower-case, but retains symbols.
 
+Automatically crack the same text:
+```julia
+crack_caesar("Khoor, Zruog!")
+# outputs ("hello, world!", 3)
+```
+
 ### Monoalphabetic cipher
 
 Encrypt the text "Hello, World!" with the same Caesar cipher, but

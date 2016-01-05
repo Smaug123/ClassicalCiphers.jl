@@ -96,3 +96,19 @@ function frequencies(input)
   end
   ans
 end
+
+"""
+Finds the index of coincidence of the input string. Uppercase characters are considered to be
+equal to their lowercase counterparts.
+"""
+function index_of_coincidence(input)
+  freqs = frequencies(lowercase(letters_only(input)))
+  len = length(lowercase(letters_only(input)))
+  
+  ans = 0
+  for i in 'a':'z'
+    ans += (x -> x*(x-1))(get(freqs, i, 0))
+  end
+
+  ans /= (len * (len-1) / 26)
+end

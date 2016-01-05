@@ -30,10 +30,17 @@ Cracks the given ciphertext according to the Caesar cipher.
 Returns (plaintext, key::Integer), such that encrypt_caesar(plaintext, key)
 would return ciphertext.
 
+With cleverness=0, simply does the shift that maximises e's frequency.
+With cleverness=1, maximises the string's total fitness.
+
 Converts the input to lowercase.
 """
-function crack_caesar(ciphertext)
+function crack_caesar(ciphertext; cleverness=1)
   texts = [(decrypt_caesar(ciphertext,key), key) for key in 1:26]
-  texts = sort(texts, by=(x -> string_fitness(first(x))))
+  if cleverness == 1
+    texts = sort(texts, by=(x -> string_fitness(first(x))))
+  else
+    texts = sort(texts, by=(x -> length(collect(filter(i -> (i == 'e'), first(x))))))
+  end
   texts[end]
 end

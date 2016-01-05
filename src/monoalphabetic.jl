@@ -69,6 +69,9 @@ end
 """
 crack_monoalphabetic cracks the given ciphertext which was encrypted by the monoalphabetic
 substitution cipher.
+
+Returns (the derived key, decrypted plaintext).
+
 Possible arguments include:
 starting_key="", which when specified (for example, as "ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
   starts the simulation at the given key. The default causes it to start with the most

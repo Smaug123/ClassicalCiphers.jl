@@ -118,6 +118,19 @@ decrypt_vigenere("HFLMOXOSLE", [0, 1])
 
 Notice that the offset `0` corresponds to the key `a`.
 
+Crack a text:
+
+```julia
+crack_vigenere(str)
+```
+
+This attempts to use the index of coincidence to find the keylength,
+and then performs frequency analysis to derive the key.
+It returns (key, decrypted text).
+
+If the keylength is known, specifying it as `crack_vigenere(str, keylength=6)`
+may aid decryption.
+
 ### Solitaire cipher
 
 Encrypt the text "Hello, World!" with the Solitaire cipher, key "crypto":
@@ -133,6 +146,7 @@ Decrypt text with an initial deck specified:
 decrypt_solitaire("EXKYI ZSGEH UNTIQ", collect(1:54))
 # outputs "aaaaaaaaaaaaaaa", as per https://www.schneier.com/code/sol-test.txt
 ```
+
 
 [Caesar]: https://en.wikipedia.org/wiki/Caesar_cipher
 [Vigenère]: https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher

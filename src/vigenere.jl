@@ -36,3 +36,37 @@ function decrypt_vigenere(plaintext, key::AbstractString)
   # plaintext: string; key: string, so "ab" decrypts "ac" as "ab"
   decrypt_vigenere(plaintext, [Int(i)-97 for i in lowercase(letters_only(key))])
 end
+
+"""
+Cracks the given text encrypted with the Vigenere cipher.
+
+Returns (derived key, decrypted plaintext).
+
+Optional parameters:
+keylength=0: if the key length is known, specifying it may help the solver.
+  If 0, the solver will attempt to derive the key length using the index
+  of coincidence.
+"""
+function crack_vigenere(plaintext; keylength=0)
+  stripped_text = letters_only(lowercase(plaintext))
+  if keylength == 0
+  	lens = sort(collect(2:15), by= len -> mean([index_of_coincidence(stripped_text[i:len:end]) for i in 1:len]))
+    keylength = lens[end]
+  end
+
+  everyother = [stripped_text[i:keylength:end] for i in 1:keylength]
+  decr = [crack_caesar(st)[1] for st in everyother]
+
+  ans = IOBuffer()
+  for i in 1:length(decr[1])
+  	for j in 1:keylength
+  	  if i <= length(decr[j])
+  		print(ans, decr[j][i])
+  	  end
+  	end
+  end
+
+  derived_key = join([crack_caesar(st)[2] for st in everyother], "")
+  (derived_key, takebuf_string(ans))
+
+end

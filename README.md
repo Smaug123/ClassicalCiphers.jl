@@ -12,6 +12,7 @@ The Solitaire cipher is included for completeness, though it is perhaps not stri
 * [Caesar]
 * [Monoalphabetic substitution]
 * [Vigenère]
+* [Portas]
 * [Solitaire]
 
 ## Gotchas
@@ -131,6 +132,28 @@ It returns (key, decrypted text).
 If the keylength is known, specifying it as `crack_vigenere(str, keylength=6)`
 may aid decryption.
 
+### Portas cipher
+
+Encrypt the text "Hello, World!" with a Portas cipher of key "ab":
+
+```julia
+encrypt_portas("Hello, World!", "ab")
+# outputs "URYYB, JBEYQ!"
+```
+
+Note that the input has been made uppercase, but symbols have been preserved.
+The key is expected to be letters only; it is converted to uppercase and symbols
+are stripped out before use.
+
+Decrypt the same text:
+
+```julia
+decrypt_portas("URYYB, JBEYQ!", "ab") 
+# outputs "hello, world!"
+```
+
+Notice that the input has been made lowercase.
+
 ### Solitaire cipher
 
 Encrypt the text "Hello, World!" with the Solitaire cipher, key "crypto":
@@ -147,8 +170,8 @@ decrypt_solitaire("EXKYI ZSGEH UNTIQ", collect(1:54))
 # outputs "aaaaaaaaaaaaaaa", as per https://www.schneier.com/code/sol-test.txt
 ```
 
-
 [Caesar]: https://en.wikipedia.org/wiki/Caesar_cipher
 [Vigenère]: https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher
 [Monoalphabetic substitution]: https://en.wikipedia.org/wiki/Substitution_cipher
 [Solitaire]: https://en.wikipedia.org/wiki/Solitaire_(cipher)
+[Portas]: http://practicalcryptography.com/ciphers/porta-cipher/

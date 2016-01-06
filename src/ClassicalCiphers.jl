@@ -8,9 +8,11 @@ include("caesar.jl")
 include("vigenere.jl")
 include("solitaire.jl")
 include("portas.jl")
+include("affine.jl")
 
 export encrypt_monoalphabetic, decrypt_monoalphabetic, crack_monoalphabetic,
        encrypt_caesar, decrypt_caesar, crack_caesar,
+       encrypt_affine, decrypt_affine, crack_affine,
        encrypt_vigenere, decrypt_vigenere, crack_vigenere,
        encrypt_portas, decrypt_portas,
        encrypt_solitaire, decrypt_solitaire,

@@ -50,6 +50,37 @@ crack_caesar("Khoor, Zruog!")
 # outputs ("hello, world!", 3)
 ```
 
+### Affine cipher
+
+Encrypt the text "Hello, World!" with the function `x -> 3x+4`:
+
+```julia
+encrypt_affine("Hello, World!", 3, 4)
+# outputs
+```
+
+Notice that `encrypt_affine` turns everything upper-case, but retains symbols.
+The multiplier is the second argument, and the additive constant is the third.
+
+The multiplier must be coprime to 26, or an error is thrown.
+
+Decrypt the same text:
+
+```julia
+decrypt_affine("ZQLLU, SUDLN!", 3, 4)
+# outputs "hello, world!"
+```
+
+Crack the same text:
+
+```julia
+crack_affine("ZQLLU, SUDLN!")
+# outputs ((3, 4), "hello, world!")
+```
+
+You can provide `mult=` or `add=` options to `crack_affine`, if they are known,
+to help it out.
+
 ### Monoalphabetic cipher
 
 Encrypt the text "Hello, World!" with the same Caesar cipher, but

@@ -10,6 +10,7 @@ The Solitaire cipher is included for completeness, though it is perhaps not stri
 ## Currently Implemented
 
 * [Caesar]
+* [Affine]
 * [Monoalphabetic substitution]
 * [Vigenère]
 * [Portas]
@@ -202,6 +203,7 @@ decrypt_solitaire("EXKYI ZSGEH UNTIQ", collect(1:54))
 ```
 
 [Caesar]: https://en.wikipedia.org/wiki/Caesar_cipher
+[Affine]: https://en.wikipedia.org/wiki/Affine_cipher
 [Vigenère]: https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher
 [Monoalphabetic substitution]: https://en.wikipedia.org/wiki/Substitution_cipher
 [Solitaire]: https://en.wikipedia.org/wiki/Solitaire_(cipher)

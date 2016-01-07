@@ -198,6 +198,9 @@ encrypt_hill("Hello, World!", [1 2; 5 7])
 
 Notice that the input has been made uppercase and symbols have been stripped out.
 
+The key matrix must be invertible mod 26. That is, its determinant must be
+coprime to 26.
+
 Encrypt the same text with the same key, this time represented as a string:
 
 ```julia

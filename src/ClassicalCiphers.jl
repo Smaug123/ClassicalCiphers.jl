@@ -9,6 +9,7 @@ include("vigenere.jl")
 include("solitaire.jl")
 include("portas.jl")
 include("affine.jl")
+include("hill.jl")
 
 export encrypt_monoalphabetic, decrypt_monoalphabetic, crack_monoalphabetic,
        encrypt_caesar, decrypt_caesar, crack_caesar,
@@ -16,6 +17,7 @@ export encrypt_monoalphabetic, decrypt_monoalphabetic, crack_monoalphabetic,
        encrypt_vigenere, decrypt_vigenere, crack_vigenere,
        encrypt_portas, decrypt_portas,
        encrypt_solitaire, decrypt_solitaire,
+       encrypt_hill, decrypt_hill,
        string_fitness, index_of_coincidence
 
 end # module

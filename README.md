@@ -14,6 +14,7 @@ The Solitaire cipher is included for completeness, though it is perhaps not stri
 * [Monoalphabetic substitution]
 * [Vigenère]
 * [Portas]
+* [Hill]
 * [Solitaire]
 
 ## Gotchas
@@ -186,6 +187,52 @@ decrypt_portas("URYYB, JBEYQ!", "ab")
 
 Notice that the input has been made lowercase.
 
+### Hill cipher
+
+Encrypt the text "Hello, World!" with a Hill key of matrix `[1 2; 5 7]`:
+
+```julia
+encrypt_hill("Hello, World!", [1 2; 5 7])
+# outputs "PHHRGUWQRV"
+```
+
+Notice that the input has been made uppercase and symbols have been stripped out.
+
+The key matrix must be invertible mod 26. That is, its determinant must be
+coprime to 26.
+
+Encrypt the same text with the same key, this time represented as a string:
+
+```julia
+encrypt_hill("Hello, World!", "bcfh")
+# outputs "PLHCGQWHRY"
+```
+
+If the plaintext-length is not a multiple of the dimension of the key matrix,
+it is padded with X:
+
+```julia
+encrypt_hill("Hello", "bcfh")
+# outputs "PLHCIX"
+
+decrypt_hill("PLHCIX", "bcfh")
+# outputs "hellox"
+```
+
+Decrypt the text "PLHCGQWHRY" with key of `[1 2; 5 7]`:
+
+```julia
+decrypt_hill("PLHCGQWHRY", [1 2; 5 7])
+# outputs "helloworld"
+```
+
+Do the same, but using the string representation of the key:
+
+```julia
+decrypt_hill("PLHCGQWHRY", "bcfh")
+# outputs "helloworld"
+```
+
 ### Solitaire cipher
 
 Encrypt the text "Hello, World!" with the Solitaire cipher, key "crypto":
@@ -208,3 +255,4 @@ decrypt_solitaire("EXKYI ZSGEH UNTIQ", collect(1:54))
 [Monoalphabetic substitution]: https://en.wikipedia.org/wiki/Substitution_cipher
 [Solitaire]: https://en.wikipedia.org/wiki/Solitaire_(cipher)
 [Portas]: http://practicalcryptography.com/ciphers/porta-cipher/
+[Hill]: https://en.wikipedia.org/wiki/Hill_cipher

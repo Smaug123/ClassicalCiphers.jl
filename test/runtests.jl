@@ -1,7 +1,7 @@
 using ClassicalCiphers
 
 tests = ["vigenere", "monoalphabetic", "solitaire",
-		 "caesar", "portas", "affine", "hill"]
+		 "caesar", "portas", "affine", "hill", "playfair"]
 
 println("Running tests:")
 

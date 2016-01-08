@@ -15,6 +15,7 @@ The Solitaire cipher is included for completeness, though it is perhaps not stri
 * [Vigenère]
 * [Portas]
 * [Hill]
+* [Playfair]
 * [Solitaire]
 
 ## Gotchas
@@ -233,6 +234,54 @@ decrypt_hill("PLHCGQWHRY", "bcfh")
 # outputs "helloworld"
 ```
 
+### Playfair cipher
+
+Encrypt the text "Hello, World!" with the Playfair cipher, key "playfair example":
+```julia
+encrypt_playfair("Hello, World!", "playfair example")
+# outputs "DMYRANVQCRGE"
+```
+
+The key is converted to "PLAYFIREXM", removing duplicate letters and punctuation.
+The padding character used to separate double letters, and to ensure the final
+plaintext is of even length, is 'X'; the backup character is 'Z' (used for separating
+consecutive 'X's).
+
+Encrypt the same text using an explicitly specified keysquare:
+
+```julia
+arr = ['P' 'L' 'A' 'Y' 'F'; 'I' 'R' 'E' 'X' 'M'; 'B' 'C' 'D' 'G' 'H'; 'K' 'N' 'O' 'Q' 'S'; 'T' 'U' 'V' 'W' 'Z']
+encrypt_playfair("Hello, World!", arr)
+# outputs "DMYRANVQCRGE"
+```
+
+Note that the keysquare must be 25 letters, in a 5x5 array.
+
+Optionally specify the two letters which are to be combined (default 'I','J'):
+
+```julia
+encrypt_playfair("IJXYZA", "PLAYFIREXM", combined=('I', 'J'))
+# outputs "RMRMFWYE"
+encrypt_playfair("IJXYZA", "PLAYFIREXM", combined=('X', 'Z'))
+# outputs "BSGXEY"
+```
+
+In this case, the letters are combined in the plaintext, and then treated as one throughout.
+
+Decrypt the same text:
+
+```julia
+decrypt_playfair("RMRMFWYE", "playfair example")
+# outputs "ixixyzax"
+```
+
+The decrypting function does not attempt to delete padding letters.
+Note that in the above example, the text originally encrypted was "IJXYZA";
+the 'J' was transcribed as 'I', as specified by the default `combined=('I', 'J')`,
+and then padding 'X's were introduced to ensure no digraph was a double letter.
+Finally, an 'X' was appended to the string, to ensure that the string was not of odd
+length.
+
 ### Solitaire cipher
 
 Encrypt the text "Hello, World!" with the Solitaire cipher, key "crypto":
@@ -256,3 +305,4 @@ decrypt_solitaire("EXKYI ZSGEH UNTIQ", collect(1:54))
 [Solitaire]: https://en.wikipedia.org/wiki/Solitaire_(cipher)
 [Portas]: http://practicalcryptography.com/ciphers/porta-cipher/
 [Hill]: https://en.wikipedia.org/wiki/Hill_cipher
+[Playfair]: https://en.wikipedia.org/wiki/Playfair_cipher

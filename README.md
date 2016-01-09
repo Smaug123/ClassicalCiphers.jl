@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/Smaug123/ClassicalCiphers.jl.svg?branch=master)](https://travis-ci.org/Smaug123/ClassicalCiphers.jl)
 
+[![Coverage Status](https://coveralls.io/repos/Smaug123/ClassicalCiphers.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/Smaug123/ClassicalCiphers.jl?branch=master)
+
 # ClassicalCiphers
 
 ## Main Features

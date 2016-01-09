@@ -9,3 +9,4 @@ using Base.Test
 @test decrypt_monoalphabetic("5@coD", Dict{Char, Char}('a' => '5', 'B' => '@', 'b' => 'o', 'D' => 'D')) == "aBcbD"
 
 @test decrypt_monoalphabetic("WKLV FRGH ZDV LQYHQWHG EB MXOLXV FDHVDU", "DEFGHIJKLMNOPQRSTUVWXYZABC") == lowercase("THIS CODE WAS INVENTED BY JULIUS CAESAR")
+

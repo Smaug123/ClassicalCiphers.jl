@@ -36,7 +36,7 @@ With cleverness=1, maximises the string's total fitness.
 Converts the input to lowercase.
 """
 function crack_caesar(ciphertext; cleverness=1)
-  texts = [(decrypt_caesar(ciphertext,key), key) for key in 1:26]
+  texts = [(decrypt_caesar(ciphertext,key), key) for key in 0:25]
   if cleverness == 1
     texts = sort(texts, by=(x -> string_fitness(first(x))))
   else

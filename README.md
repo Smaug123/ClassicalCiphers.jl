@@ -18,6 +18,7 @@ The Solitaire cipher is included for completeness, though it is perhaps not stri
 * [Portas]
 * [Hill]
 * [Playfair]
+* [Enigma (M3 Army)][Enigma]
 * [Solitaire]
 
 ## Gotchas
@@ -284,6 +285,65 @@ and then padding 'X's were introduced to ensure no digraph was a double letter.
 Finally, an 'X' was appended to the string, to ensure that the string was not of odd
 length.
 
+### Enigma
+
+The variant of Enigma implemented is the M3 Army version.
+This has five possible rotors, of which three are chosen in some distinct order.
+
+The plugboard may be specified either as a `Array{Tuple{Char, Char}}` or a string.
+For example, both the following plugboards have the same effect:
+
+```julia
+"ABCDEF"
+[('A', 'B'), ('C', 'D'), ('E', 'F')]
+```
+
+For no plugboard, use `Tuple{Char, Char}[]` or `""`.
+
+The rotor order may be specified as `[5, 1, 2]` indicating that the leftmost rotor should be rotor 5, the middle should be rotor 1, and the rightmost should be rotor 2.
+That is, when a letter goes into Enigma, it passes first through rotor 2, then rotor 1, then rotor 5.
+(That is, letters move through the machine from right to left, before being reflected.)
+
+The ring settings may be specified as a three-character string.
+For example, `"AAA"` indicates no adjustment to the rings.
+TODO: expand this.
+
+The initial key may be specified as a three-character string.
+For example, `"AQY"` indicates that the leftmost rotor should start at position `'A'`, the middle rotor at position `'Q'`, and the rightmost at position `'Y'`.
+
+Three reflectors are given; they may be specified with `reflector_id='A'` or `'B'` or `'C'`.
+Alternatively, specify `reflector_id="YRUHQSLDPXNGOKMIEBFZCWVJAT"` to use a custom reflector; this particular example happens to be reflector `'B'`, so is equivalent to `reflector_id='B'`.
+
+For example, the following encrypts `"AAA"` with rotors 1, 2, 3, with key `"ABC"`, an empty plugboard, the default `'B'` reflector, and ring `"AAA"`:
+
+```julia
+encrypt_enigma("AAA", [1,2,3], "ABC")
+# outputs "CXT"
+```
+
+This is synonymous with:
+
+```julia
+encrypt_enigma("AAA", [1,2,3], "ABC", ring="AAA", reflector_id='B', stecker="")
+```
+
+And also with:
+
+```julia
+encrypt_enigma("AAA", [1,2,3], "ABC", ring="AAA", reflector_id="YRUHQSLDPXNGOKMIEBFZCWVJAT", stecker="")
+```
+
+And also with:
+
+```julia
+encrypt_enigma("AAA", [1,2,3], "ABC", ring="AAA", reflector_id='B', stecker=Tuple{Char, Char}[])
+```
+
+The arguments to `decrypt_enigma` are identical.
+(In fact, `decrypt_enigma` and `encrypt_enigma` are essentially the same function, because Enigma is reversible.)
+As ever, `encrypt_enigma` uppercases its input, and `decrypt_enigma` lowercases it.
+
+
 ### Solitaire cipher
 
 Encrypt the text "Hello, World!" with the Solitaire cipher, key "crypto":
@@ -308,3 +368,4 @@ decrypt_solitaire("EXKYI ZSGEH UNTIQ", collect(1:54))
 [Portas]: http://practicalcryptography.com/ciphers/porta-cipher/
 [Hill]: https://en.wikipedia.org/wiki/Hill_cipher
 [Playfair]: https://en.wikipedia.org/wiki/Playfair_cipher
+[Enigma]: https://en.wikipedia.org/wiki/Enigma_machine

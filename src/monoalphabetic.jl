@@ -1,3 +1,7 @@
+function keystr_to_dict(keystr::AbstractString)
+  Dict{Char, Char}(map(x -> (x[1]+64, x[2]), enumerate(uppercase(keystr))))
+end
+
 """
 Encrypts the given plaintext according to the monoalphabetic substitution cipher.
 The key may be given as a Dict of replacements {'a' => 'b', 'c' => 'd'}, etc,
@@ -35,8 +39,7 @@ end
 function encrypt_monoalphabetic(plaintext, key::AbstractString)
   # plaintext: string; key: string of length 26, first character is the image of 'a', etc
   # working in lowercase; key is assumed only to have each element appearing once
-  dict = Dict{Char, Char}(map(x -> (x[1]+64, x[2]), enumerate(uppercase(key))))
-  encrypt_monoalphabetic(uppercase(plaintext), dict)
+  encrypt_monoalphabetic(uppercase(plaintext), keystr_to_dict(key))
 end
 
 function decrypt_monoalphabetic(ciphertext, key::AbstractString)

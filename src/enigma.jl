@@ -70,17 +70,21 @@ Stecker is either an array - for example, [('A','B'), ('D', 'E')] specifying
   the same thing). No letter may appear more than once.
 Ring is a string - for example, "AAA" - being the offset applied to each rotor.
   "AAA", for example, signifies no offset. The string must be three letters.
+skip_stecker_check=false, which when `true` skips validation of stecker settings.
 """
 function encrypt_enigma{I <: Integer}(plaintext,
 									  rotors::Array{I, 1}, key::AbstractString;
 									  reflector_id='B', ring::AbstractString = "AAA",
-									  stecker = Tuple{Char, Char}[])
+									  stecker = Tuple{Char, Char}[],
+									  skip_stecker_check = false)
 	parsed_stecker = parse_stecker(stecker)
 	# validate stecker settings
-	if flatten(parsed_stecker) != unique(flatten(parsed_stecker))
-		error("No letter may appear more than once in stecker settings.")
+	if !skip_stecker_check
+		if flatten(parsed_stecker) != unique(flatten(parsed_stecker))
+			error("No letter may appear more than once in stecker settings.")
+		end
 	end
-	parsed_stecker = map(uppercase, parsed_stecker)
+	parsed_stecker::Array{Tuple{Char, Char}} = map(uppercase, parsed_stecker)
 
 
 	# validate ring settings
@@ -116,7 +120,7 @@ function encrypt_enigma{I <: Integer}(plaintext,
 	end
 
 	# validate reflector settings
-	reflector = parse_reflector(reflector_id)
+	reflector = keystr_to_dict(parse_reflector(reflector_id))
 
 	# sanitise plaintext
 	plaintext = uppercase(letters_only(plaintext))
@@ -130,12 +134,16 @@ function encrypt_enigma{I <: Integer}(plaintext,
 					 "VZBRGITYUPSDNHLXAWMJQOFECK"]
 	notches = [17,5,22,10,26]
 
-	rotor1 = rotor_layouts[rotors[1]]
+	rotor1 = keystr_to_dict(rotor_layouts[rotors[1]])
 	notch1 = notches[rotors[1]]
-	rotor2 = rotor_layouts[rotors[2]]
+	rotor2 = keystr_to_dict(rotor_layouts[rotors[2]])
 	notch2 = notches[rotors[2]]
-	rotor3 = rotor_layouts[rotors[3]]
+	rotor3 = keystr_to_dict(rotor_layouts[rotors[3]])
 	notch3 = notches[rotors[3]]
+
+	rotor1_inv = Dict{Char, Char}([reverse(a) for a in rotor1])
+	rotor2_inv = Dict{Char, Char}([reverse(a) for a in rotor2])
+	rotor3_inv = Dict{Char, Char}([reverse(a) for a in rotor3])
 
 	# apply the key as part of initialisation; incorporates ring
 	key_offsets = [26+Int(ch)-65 for ch in key]
@@ -218,11 +226,14 @@ function encrypt_enigma{I <: Integer}(plaintext,
 		# rotors
 		# comes in as…
 		working_ch = Char((Int(working_ch)-65+rotor1movements) % 26 + 65)
-		working_ch = uppercase(decrypt_monoalphabetic(working_ch, rotor1))[1]
+
+		# we use encrypt_monoalphabetic and inverse-dictionaries already computed, for speed,
+		# where it is more natural to use decrypt_monoalphabetic
+		working_ch = uppercase(encrypt_monoalphabetic(working_ch, rotor1_inv))[1]
  		working_ch = Char(65+((rotor1movements*26 + rotor2movements - rotor1movements +Int(working_ch)-65) % 26))
-		working_ch = uppercase(decrypt_monoalphabetic(working_ch, rotor2))[1]
+		working_ch = uppercase(encrypt_monoalphabetic(working_ch, rotor2_inv))[1]
  		working_ch = Char(65+((26*rotor2movements + rotor3movements-rotor2movements+Int(working_ch)-65) % 26))
-		working_ch = uppercase(decrypt_monoalphabetic(working_ch, rotor3))[1]
+		working_ch = uppercase(encrypt_monoalphabetic(working_ch, rotor3_inv))[1]
 
 		# plugboard
 		# comes in as…

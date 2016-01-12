@@ -82,12 +82,12 @@ function decrypt_hill{I <: Integer}(ciphertext, key::Array{I, 2})
 	end
 
 	# invert the input array mod 26
-    inv = (adjugate(key) .% 26)
-    inv = invmod(round(Integer, det(key)), 26) .* inv
-    inv = inv .% 26
-    inv = (inv .+ (26 * 26)) .% 26
+    inverse_mat = (adjugate(key) .% 26)
+    inverse_mat = invmod(round(Integer, det(key)), 26) .* inverse_mat
+    inverse_mat = inverse_mat .% 26
+    inverse_mat = (inverse_mat .+ (26 * 26)) .% 26
 
-    lowercase(encrypt_hill(ciphertext, inv))
+    lowercase(encrypt_hill(ciphertext, inverse_mat))
 end
 
 function decrypt_hill(ciphertext, key::AbstractString)

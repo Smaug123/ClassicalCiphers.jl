@@ -63,7 +63,7 @@ function swap_two(str)
     indices = rand(1:length(str), 2)
   end
 
-  join([i == indices[1] ? str[indices[2]] : (i == indices[2] ? str[indices[1]] : str[i]) for (i, ch) in enumerate(str)], "")
+  join([i == indices[1] ? str[indices[2]] : (i == indices[2] ? str[indices[1]] : str[i]) for i in 1:length(str)], "")
 end
 
 """
@@ -103,7 +103,7 @@ function crack_monoalphabetic(ciphertext; starting_key="",
     end
 
     freqs_input = sort(collect(freqs), by = tuple -> last(tuple), rev=true)
-    start_key = ['a' for c in 1:26]
+    start_key = fill('a', 26)
     for i in 1:26
       start_key[Int(commonest[i])-64] = freqs_input[i][1]
     end

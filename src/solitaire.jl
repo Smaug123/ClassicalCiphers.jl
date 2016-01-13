@@ -38,20 +38,20 @@ function next_solitaire(deckIn)
     deck = rotateRight(deck,1)
   end
 # triple-cut
-  split = splitBy(deck, x -> x > 52)
+  split_deck = splitBy(deck, x -> x > 52)
   if deck[1] > 52 && deck[end] > 52
     1
     # do nothing
   elseif deck[1] > 52
-    split = rotateRight(split, 1)
+    split_deck = rotateRight(split_deck, 1)
   elseif deck[end] > 52
-    split = rotateLeft(split, 1)
+    split_deck = rotateLeft(split_deck, 1)
   else
-    inter = split[1]
-    split[1] = split[end]
-    split[end] = inter
+    inter = split_deck[1]
+    split_deck[1] = split_deck[end]
+    split_deck[end] = inter
   end
-  deck = flatten(split)
+  deck = flatten(split_deck)
 # take bottom of deck and put it just above last card
   cardsToTake = (deck[end] > 52) ? 0 : deck[end]
 

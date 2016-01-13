@@ -5,7 +5,7 @@ For example, encrypt_vigenere("ab", [0, 1]) returns "AC".
 function encrypt_vigenere(plaintext, key::Array)
   # plaintext: string; key: vector of integer offsets, so [0, 1] encrypts "ab" as "ac"
 
-  ans = [encrypt_caesar(char, key[(i-1) % length(key)+1]) for (i, char) in enumerate(letters_only(plaintext))]
+  ans = [encrypt_caesar(chr, key[(i-1) % length(key)+1]) for (i, chr) in enumerate(letters_only(plaintext))]
   join(ans, "")
 
 end
@@ -58,10 +58,10 @@ function crack_vigenere(plaintext; keylength=0)
   decr = [crack_caesar(st)[1] for st in everyother]
 
   ans = IOBuffer()
-  for i in 1:length(decr[1])
+  for column in 1:length(decr[1])
   	for j in 1:keylength
-  	  if i <= length(decr[j])
-  		print(ans, decr[j][i])
+  	  if column <= length(decr[j])
+  		  print(ans, decr[j][column])
   	  end
   	end
   end

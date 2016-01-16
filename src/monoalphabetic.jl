@@ -172,6 +172,6 @@ function crack_monoalphabetic(ciphertext; starting_key="",
     println("Best was $(total_best_key) at $(total_best_fitness)")
     println(total_best_decrypt)
   end
-  (key, decrypt_monoalphabetic(ciphertext, key))
+  (decrypt_monoalphabetic(ciphertext, key), key)
 end
 

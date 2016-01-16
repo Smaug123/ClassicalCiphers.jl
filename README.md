@@ -62,7 +62,7 @@ Encrypt the text "Hello, World!" with the function `x -> 3x+4`:
 
 ```julia
 encrypt_affine("Hello, World!", 3, 4)
-# outputs
+# outputs "ZQLLU, SUDLN!"
 ```
 
 Notice that `encrypt_affine` turns everything upper-case, but retains symbols.
@@ -81,7 +81,7 @@ Crack the same text:
 
 ```julia
 crack_affine("ZQLLU, SUDLN!")
-# outputs ((3, 4), "hello, world!")
+# outputs ("hello, world!", (3, 4))
 ```
 
 You can provide `mult=` or `add=` options to `crack_affine`, if they are known,
@@ -118,7 +118,7 @@ It simply makes all specified changes, and leaves the rest of the string unchang
 Cracking a cipher:
 ```julia
 crack_monoalphabetic(str, chatty=0, rounds=10)
-# outputs (key, decrypted_string)
+# outputs (decrypted_string, key)
 ```
 
 The various optional arguments to `crack_monoalphabetic` are:

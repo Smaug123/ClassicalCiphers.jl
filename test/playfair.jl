@@ -12,6 +12,8 @@ using Base.Test
 @test (arr = ['P' 'L' 'A' 'Y' 'F'; 'I' 'R' 'E' 'X' 'M'; 'B' 'C' 'D' 'G' 'H'; 'K' 'N' 'O' 'Q' 'S'; 'T' 'U' 'V' 'W' 'Z']; 
 	   encrypt_playfair("Hello, World!", arr) == "DMYRANVQCRGE")
 
+@test encrypt_playfair("HELXLOWORLD", "PLAYFIREXM") == "DMYRANVQCRGE"
+
 @test encrypt_playfair("IJXYZA", "PLAYFIREXM", combined=('I', 'J')) == "RMRMFWYE"
 @test encrypt_playfair("IJXYZA", "PLAYFIREXM", combined=('X', 'Z')) == "BSGXEY"
 

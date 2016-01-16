@@ -61,5 +61,5 @@ function crack_affine(ciphertext; mult=0, add=-1)
 
 	sort!(decrypts, by=(x -> string_fitness(x[2])))
 
-	decrypts[end]
+	reverse(decrypts[end])
 end

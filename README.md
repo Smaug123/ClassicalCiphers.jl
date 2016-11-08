@@ -37,7 +37,7 @@ Encrypt the text "Hello, World!" with a Caesar offset of 3 (that is, sending
   'a' to 'd'):
 ```julia
 encrypt_caesar("Hello, World!", 3)
-# outputs "khoor, zruog!"
+# outputs "KHOOR, ZRUOG!"
 ```
 
 Notice that `encrypt_caesar` turns everything upper-case, but retains symbols.
@@ -97,7 +97,7 @@ encrypt_monoalphabetic("Hello, World!", "DEFGHIJKLMNOPQRSTUVWXYZABC")
 # outputs "KHOOR, ZRUOG!"
 ```
 
-Decrypt the same text, this time demonstrating the dictionary capability:
+Decrypt the same text:
 
 ```julia
 decrypt_monoalphabetic("Khoor, Zruog!", "DEFGHIJKLMNOPQRSTUVWXYZABC")

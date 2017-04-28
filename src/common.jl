@@ -4,7 +4,7 @@ function letters_only(text)
 end
 
 function rotateRight(arr, n)
-  # implementation of the Mathematica function RotateRight
+  # implementation of the Mathematica function RotateRight - or you could try circshift()?
   ans = copy(arr)
   for i in 1:length(arr)
     ans[i] = arr[((2*length(ans)+i-n-1) % length(ans)) + 1]
@@ -112,7 +112,7 @@ equal to their lowercase counterparts.
 function index_of_coincidence(input)
   freqs = frequencies(lowercase(letters_only(input)))
   len = length(lowercase(letters_only(input)))
-  
+
   ans = 0
   for i in 'a':'z'
     ans += (x -> x*(x-1))(get(freqs, i, 0))

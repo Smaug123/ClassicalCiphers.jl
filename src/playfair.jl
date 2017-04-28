@@ -12,9 +12,8 @@ function playfair_key_to_square(key::AbstractString, replacement)
 	key_sanitised = union(uppercase(letters_only(key)))
 	# construct key square
 	remaining = collect(filter(x -> (x != replacement[2] && findfirst(key_sanitised, x) == 0), 'A':'Z'))
-	keysquare = transpose(reshape([key_sanitised; remaining], 5, 5))
-
-	keysquare
+	keysquare = reshape([key_sanitised; remaining], 5, 5)
+    return permutedims(keysquare, (2, 1)) # transpose() is deprecated
 end
 
 function encrypt_playfair(plaintext, key::AbstractString; combined=('I','J'))
@@ -101,7 +100,7 @@ function encrypt_playfair(plaintext, key::Array{Char, 2}; stripped=false, combin
     		print(ans, key[((l1pos[1]+1 - 1) % 5)+1, l1pos[2]])
     		print(ans, key[((l2pos[1]+1 - 1) % 5)+1, l2pos[2]])
     	else
-    		
+
     		print(ans, key[l1pos[1], l2pos[2]])
     		print(ans, key[l2pos[1], l1pos[2]])
     	end
@@ -126,6 +125,6 @@ Does not attempt to delete X's inserted as padding for double letters.
 function decrypt_playfair(ciphertext, key::Array{Char, 2}; combined=('I', 'J'))
 	# to obtain the decrypting keysquare, reverse every row and every column
 	keysquare =	mapslices(reverse, key, 2)
-	keysquare = transpose(mapslices(reverse, transpose(keysquare), 2))
+	keysquare = permutedims(mapslices(reverse, permutedims(keysquare, (2, 1)), 2), (2, 1))
 	lowercase(encrypt_playfair(ciphertext, keysquare, combined=combined))
 end

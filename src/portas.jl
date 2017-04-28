@@ -32,7 +32,7 @@ function encrypt_portas(plaintext, key_in::AbstractString)
     end
   end
 
-  takebuf_string(ans)
+  String(take!(ans))
 end
 
 """

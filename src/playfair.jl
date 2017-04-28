@@ -108,7 +108,7 @@ function encrypt_playfair(plaintext, key::Array{Char, 2}; stripped=false, combin
     	i += 2
     end
 
-    takebuf_string(ans)
+    String(take!(ans))
 end
 
 

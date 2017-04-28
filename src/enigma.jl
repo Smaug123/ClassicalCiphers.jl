@@ -243,7 +243,7 @@ function encrypt_enigma{I <: Integer}(plaintext,
 		print(ans, working_ch)
 	end
 
-	uppercase(takebuf_string(ans))
+	uppercase(String(take!(ans)))
 end
 
 function decrypt_enigma(args1...; args2...)

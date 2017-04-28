@@ -65,6 +65,6 @@ function crack_vigenere(plaintext; keylength=0)
   end
 
   derived_key = join([Char(65+crack_caesar(st)[2]) for st in everyother], "")
-  (derived_key, takebuf_string(ans))
+  (derived_key, String(take!(ans)))
 
 end

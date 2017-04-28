@@ -4,10 +4,8 @@ For example, encrypt_vigenere("ab", [0, 1]) returns "AC".
 """
 function encrypt_vigenere(plaintext, key::Array)
   # plaintext: string; key: vector of integer offsets, so [0, 1] encrypts "ab" as "ac"
-
   ans = [encrypt_caesar(chr, key[(i-1) % length(key)+1]) for (i, chr) in enumerate(letters_only(plaintext))]
   join(ans, "")
-
 end
 
 """
@@ -67,6 +65,6 @@ function crack_vigenere(plaintext; keylength=0)
   end
 
   derived_key = join([Char(65+crack_caesar(st)[2]) for st in everyother], "")
-  (derived_key, takebuf_string(ans))
+  (derived_key, String(take!(ans)))
 
 end

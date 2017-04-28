@@ -38,7 +38,7 @@ function encrypt_hill{I <: Integer}(plaintext, key::Array{I, 2})
     		print(ans, Char(x))
     	end
     end
-    takebuf_string(ans)
+    String(take!(ans))
 end
 
 

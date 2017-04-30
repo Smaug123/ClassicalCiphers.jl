@@ -1,5 +1,3 @@
-# include("common.jl")
-
 function next_solitaire(deckIn)
   # performs one round of Solitaire on the given deck
 # first joker

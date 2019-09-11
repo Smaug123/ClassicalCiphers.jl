@@ -1,3 +1,5 @@
+using Statistics
+
 """
 Encrypts the given string using the Vigenere cipher according to the given vector of offsets.
 For example, encrypt_vigenere("ab", [0, 1]) returns "AC".

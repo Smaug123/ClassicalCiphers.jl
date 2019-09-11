@@ -9,7 +9,7 @@ using Test
 
 # others
 
-@test decrypt_vigenere("DYIMXMESTEZDPNFVVAMJ", [11, 18, 5, 13, 12, 9, 14]-1) == "theamericanshaverobb"
+@test decrypt_vigenere("DYIMXMESTEZDPNFVVAMJ", map(x -> x - 1, [11, 18, 5, 13, 12, 9, 14])) == "theamericanshaverobb"
 
 @test decrypt_vigenere("DYIMXMESTEZDPNFVVAMJ", "kremlin") == "theamericanshaverobb"
 

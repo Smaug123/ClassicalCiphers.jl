@@ -1,3 +1,5 @@
+using LinearAlgebra
+
 """
 Encrypts the given plaintext according to the Hill cipher.
 The key may be given as a matrix (that is, two-dimensional Array{Int}) or as a string.
@@ -51,7 +53,7 @@ function encrypt_hill(plaintext, key::AbstractString)
 
     key_matrix = Array{Integer}(matrix_dim, matrix_dim)
     for i in 1:length(key)
-    	key_matrix[ind2sub([matrix_dim, matrix_dim], i)...] = Int(key_string[i]) - 65
+    	key_matrix[CartesianIndices([matrix_dim, matrix_dim], i)...] = Int(key_string[i]) - 65
     end
 
 	encrypt_hill(plaintext, transpose(key_matrix))
@@ -99,7 +101,7 @@ function decrypt_hill(ciphertext, key::AbstractString)
 
     key_matrix = Array{Integer}(matrix_dim, matrix_dim)
     for i in 1:length(key)
-    	key_matrix[ind2sub([matrix_dim, matrix_dim], i)...] = Int(key_string[i]) - 65
+    	key_matrix[CartesianIndices([matrix_dim, matrix_dim], i)...] = Int(key_string[i]) - 65
     end
 
 	decrypt_hill(ciphertext, transpose(key_matrix))

@@ -49,7 +49,7 @@ function next_solitaire(deckIn)
     split_deck[1] = split_deck[end]
     split_deck[end] = inter
   end
-  deck = flatten(split_deck)
+  deck = Iterators.flatten(split_deck)
 # take bottom of deck and put it just above last card
   cardsToTake = (deck[end] > 52) ? 0 : deck[end]
 

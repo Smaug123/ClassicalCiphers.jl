@@ -80,7 +80,7 @@ function encrypt_enigma(plaintext,
 	parsed_stecker = parse_stecker(stecker)
 	# validate stecker settings
 	if !skip_stecker_check
-		if flatten(parsed_stecker) != unique(flatten(parsed_stecker))
+		if Iterators.flatten(parsed_stecker) != unique(Iterators.flatten(parsed_stecker))
 			error("No letter may appear more than once in stecker settings.")
 		end
 	end

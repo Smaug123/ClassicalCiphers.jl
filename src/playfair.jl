@@ -88,8 +88,8 @@ function encrypt_playfair(plaintext, key::Array{Char, 2}; stripped=false, combin
     	l1 = plaintext_sanitised[i]
     	l2 = plaintext_sanitised[i+1]
 
-    	l1pos = ind2sub((5, 5), findfirst(key, l1))
-    	l2pos = ind2sub((5, 5), findfirst(key, l2))
+    	l1pos = CartesianIndices((5, 5), findfirst(key, l1))
+    	l2pos = CartesianIndices((5, 5), findfirst(key, l2))
 
     	@assert l1pos != l2pos
 

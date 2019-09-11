@@ -59,7 +59,7 @@ Arguments are in the order: plaintext, stecker, rotors, ring, key.
 
 Plaintext is a string; punctuation is stripped out and it is made lowercase.
 Rotors is an array - for example, [1,2,3] - being the order of the rotors.
-  Each entry should be a distinct integer between 1 and 5 inclusive. 
+  Each entry should be a distinct integer between 1 and 5 inclusive.
 Key is a string of three letters, indicating the starting positions of the rotors.
 
 Optional:
@@ -72,11 +72,11 @@ Ring is a string - for example, "AAA" - being the offset applied to each rotor.
   "AAA", for example, signifies no offset. The string must be three letters.
 skip_stecker_check=false, which when `true` skips validation of stecker settings.
 """
-function encrypt_enigma{I <: Integer}(plaintext,
-									  rotors::Array{I, 1}, key::AbstractString;
-									  reflector_id='B', ring::AbstractString = "AAA",
-									  stecker = Tuple{Char, Char}[],
-									  skip_stecker_check = false)
+function encrypt_enigma(plaintext,
+						rotors::Array{Integer, 1}, key::AbstractString;
+						reflector_id='B', ring::AbstractString = "AAA",
+						stecker = Tuple{Char, Char}[],
+						skip_stecker_check = false)
 	parsed_stecker = parse_stecker(stecker)
 	# validate stecker settings
 	if !skip_stecker_check

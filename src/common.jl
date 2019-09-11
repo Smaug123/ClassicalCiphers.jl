@@ -29,10 +29,6 @@ function rotateRightStr(st::AbstractString, n)
   join(rotateRight(split(st, ""), n), "")
 end
 
-flatten{T}(a::Array{T,1}) = any(x->isa(x,Array),a)? flatten(vcat(map(flatten,a)...)): a
-flatten{T}(a::Array{T}) = reshape(a,prod(size(a)))
-flatten(a)=a
-
 function splitBy(arr, func)
   # implementation of the Mathematica function SplitBy
   # splits the array into sublists so that each list has the same value of func
@@ -58,7 +54,7 @@ function get_trigram_fitnesses()
 
   for l in lines
     (ngram, fitness) = split(l)
-    dict[ngram] = parse(fitness)
+    dict[ngram] = parse(Int64, fitness)
   end
 
   close(f)

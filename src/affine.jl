@@ -1,5 +1,3 @@
-using Iterators
-
 """
 Encrypts the given plaintext according to the Affine cipher.
 The key is given as a pair of integers: first the multiplier, then

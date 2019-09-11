@@ -66,19 +66,22 @@ function keychar_from_deck(deck::Vector)
   deck[((deck[1]==54 ? 53 : deck[1]) % length(deck)) + 1]
 end
 
-type SolitaireKeyStream
+struct SolitaireKeyStream
   deck::Vector
 end
 
-Base.start(b::SolitaireKeyStream) = (next_solitaire(b.deck))
-function Base.next(b::SolitaireKeyStream, state)
+function Base.iterate(b::SolitaireKeyStream)
+  (next_solitaire(b.deck))
+end
+
+function Base.iterate(b::SolitaireKeyStream, state)
   curState = state
   while keychar_from_deck(curState) > 52
     curState = next_solitaire(curState)
   end
   (keychar_from_deck(curState), next_solitaire(curState))
 end
-Base.done(b::SolitaireKeyStream, state) = false
+#Base.done(b::SolitaireKeyStream, state) = false
 
 """
 Encrypts the given plaintext according to the Solitaire cipher.

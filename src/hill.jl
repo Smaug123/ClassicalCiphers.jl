@@ -1,5 +1,3 @@
-using Iterators
-
 """
 Encrypts the given plaintext according to the Hill cipher.
 The key may be given as a matrix (that is, two-dimensional Array{Int}) or as a string.
@@ -12,7 +10,7 @@ is thrown.
 
 The matrix must be invertible modulo 26. If it is not, an error is thrown.
 """
-function encrypt_hill{I <: Integer}(plaintext, key::Array{I, 2})
+function encrypt_hill(plaintext, key::Array{Integer, 2})
 	if round(Integer, det(key)) % 26 == 0
 		error("Key must be invertible mod 26.")
 	end
@@ -59,7 +57,7 @@ function encrypt_hill(plaintext, key::AbstractString)
 	encrypt_hill(plaintext, transpose(key_matrix))
 end
 
-function minor{I <: Integer}(mat::Array{I, 2}, i, j)
+function minor(mat::Array{Integer, 2}, i, j)
 	d = det(mat[[1:i-1; i+1:end], [1:j-1; j+1:end]])
 	round(Integer, d)
 end
@@ -67,13 +65,13 @@ end
 """
 Computes the adjugate matrix for given matrix.
 """
-function adjugate{I <: Integer}(mat::Array{I, 2})
+function adjugate(mat::Array{Integer, 2})
 	arr = [(-1)^(i+j) * minor(mat, i, j) for (i, j) in product(1:size(mat, 1), 1:size(mat, 2))]
 	ans = reshape(arr, size(mat))
 	Array{Integer, 2}(transpose(ans))
 end
 
-function decrypt_hill{I <: Integer}(ciphertext, key::Array{I, 2})
+function decrypt_hill(ciphertext, key::Array{Integer, 2})
 	if ndims(key) != 2
 		error("Key must be a two-dimensional matrix.")
 	end
@@ -103,6 +101,6 @@ function decrypt_hill(ciphertext, key::AbstractString)
     for i in 1:length(key)
     	key_matrix[ind2sub([matrix_dim, matrix_dim], i)...] = Int(key_string[i]) - 65
     end
-    
+
 	decrypt_hill(ciphertext, transpose(key_matrix))
 end

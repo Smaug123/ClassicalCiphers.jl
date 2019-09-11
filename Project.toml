@@ -1,8 +1,11 @@
 name = "ClassicalCiphers"
 uuid = "ecf26e93-935c-5e64-9b21-bc8ac81b4723"
 
-[targets.test.deps]
+[extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
 
 [compat]
 julia = "≥ 1.0.0"

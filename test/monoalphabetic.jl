@@ -1,5 +1,4 @@
 using ClassicalCiphers
-using Base.Test
 
 @test encrypt_monoalphabetic("aBcbD", Dict{Char, Char}('a' => '5', 'B' => '@', 'b' => 'o', 'D' => 'D')) == "5@coD"
 

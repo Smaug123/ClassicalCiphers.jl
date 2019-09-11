@@ -1,5 +1,4 @@
 using ClassicalCiphers
-using Base.Test
 
 @test encrypt_solitaire("aaaaaaaaaaaaaaa", "") == "EXKYIZSGEHUNTIQ"
 @test encrypt_solitaire("aaaaaaaaaaaaaaa", "f") == "XYIUQBMHKKJBEGY"

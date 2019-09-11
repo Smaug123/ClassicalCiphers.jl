@@ -14,7 +14,7 @@ For example, decrypt_vigenere("ac", [0, 1]) returns "ab".
 """
 function decrypt_vigenere(ciphertext, key::Array)
   # ciphertext: string; key: vector of integer offsets, so [0, 1] decrypts "ac" as "ab"
-  lowercase(encrypt_vigenere(ciphertext, 26-key))
+  lowercase(encrypt_vigenere(ciphertext, map(x -> 26-x, key)))
 end
 
 """

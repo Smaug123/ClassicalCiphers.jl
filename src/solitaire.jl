@@ -2,7 +2,7 @@ function next_solitaire(deckIn)
   # performs one round of Solitaire on the given deck
 # first joker
   deck = deckIn
-  jokerPos = findin(deck, 53)[1]
+  jokerPos = findfirst(i -> i == 53, deck)
   if jokerPos != length(deck)
     inter = deck[jokerPos+1]
     deck[jokerPos+1] = deck[jokerPos]
@@ -14,7 +14,7 @@ function next_solitaire(deckIn)
     deck = rotateRight(deck)
   end
 # second joker
-  jokerPos = findin(deck, 54)[1]
+  jokerPos = findfirst(i -> i == 54, deck)
   if jokerPos <= length(deck) - 2
     inter = deck[jokerPos]
     deck[jokerPos] = deck[jokerPos+1]

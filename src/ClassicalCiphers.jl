@@ -2,8 +2,6 @@ module ClassicalCiphers
 
 # Monoalphabetic
 
-using Compat
-
 include("common.jl")
 include("monoalphabetic.jl")
 include("caesar.jl")

@@ -1,4 +1,5 @@
 using ClassicalCiphers
+using Test
 
 tests = ["vigenere", "monoalphabetic", "solitaire",
 		 "caesar", "portas", "affine", "hill", "playfair",

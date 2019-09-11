@@ -1,4 +1,5 @@
 using ClassicalCiphers
+using Test
 
 # doc examples
 @test encrypt_vigenere("ab", [0, 1]) == "AC"

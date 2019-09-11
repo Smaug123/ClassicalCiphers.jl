@@ -1,4 +1,5 @@
 using ClassicalCiphers
+using Test
 
 # Wikipedia example
 @test encrypt_playfair("Hide the gold in the tree stump", "playfair example") == "BMODZBXDNABEKUDMUIXMMOUVIF"

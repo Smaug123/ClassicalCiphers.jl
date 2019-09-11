@@ -1,4 +1,5 @@
 using ClassicalCiphers
+using Test
 
 # Wikipedia examples
 

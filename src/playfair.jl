@@ -11,8 +11,8 @@ function playfair_key_to_square(key::AbstractString, replacement)
 	# delete duplicates etc from key
 	key_sanitised = union(uppercase(letters_only(key)))
 	# construct key square
-	remaining = collect(filter(x -> (x != replacement[2] && findfirst(key_sanitised, x) == 0), 'A':'Z'))
-	keysquare = reshape([key_sanitised; remaining], 5, 5)
+	remaining = filter(x -> (x != replacement[2] && !(in(x, key_sanitised))), 'A':'Z')
+	keysquare = reshape(collect(Iterators.flatten([key_sanitised; remaining])), 5, 5)
     return permutedims(keysquare, (2, 1)) # transpose() is deprecated
 end
 
@@ -39,7 +39,7 @@ combined=('I', 'J'), marks the characters which are to be combined in the text.
 """
 function encrypt_playfair(plaintext, key::Array{Char, 2}; stripped=false, combined=('I', 'J'))
 	if !stripped
-		if findfirst(key, combined[2]) != 0
+		if in(combined[2], key)
 			error("Key must not contain symbol $(combined[2]), as it was specified to be combined.")
 		end
 		plaintext_sanitised = uppercase(letters_only(plaintext))
@@ -88,8 +88,8 @@ function encrypt_playfair(plaintext, key::Array{Char, 2}; stripped=false, combin
     	l1 = plaintext_sanitised[i]
     	l2 = plaintext_sanitised[i+1]
 
-    	l1pos = ind2sub((5, 5), findfirst(key, l1))
-    	l2pos = ind2sub((5, 5), findfirst(key, l2))
+    	l1pos = CartesianIndices((5, 5))[findfirst(i -> i == l1, key)]
+    	l2pos = CartesianIndices((5, 5))[findfirst(i -> i == l2, key)]
 
     	@assert l1pos != l2pos
 
@@ -124,7 +124,6 @@ Does not attempt to delete X's inserted as padding for double letters.
 """
 function decrypt_playfair(ciphertext, key::Array{Char, 2}; combined=('I', 'J'))
 	# to obtain the decrypting keysquare, reverse every row and every column
-	keysquare =	mapslices(reverse, key, 2)
-	keysquare = permutedims(mapslices(reverse, permutedims(keysquare, (2, 1)), 2), (2, 1))
+	keysquare = reverse(reverse(key, dims=1), dims=2)
 	lowercase(encrypt_playfair(ciphertext, keysquare, combined=combined))
 end

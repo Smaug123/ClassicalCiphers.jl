@@ -1,8 +1,8 @@
-function next_solitaire(deckIn)
+function next_solitaire(deckIn::AbstractVector{T}) :: AbstractVector{Integer} where {T<:Integer}
   # performs one round of Solitaire on the given deck
 # first joker
   deck = deckIn
-  jokerPos = findin(deck, 53)[1]
+  jokerPos = findfirst(i -> i == 53, deck)
   if jokerPos != length(deck)
     inter = deck[jokerPos+1]
     deck[jokerPos+1] = deck[jokerPos]
@@ -14,7 +14,7 @@ function next_solitaire(deckIn)
     deck = rotateRight(deck)
   end
 # second joker
-  jokerPos = findin(deck, 54)[1]
+  jokerPos = findfirst(i -> i == 54, deck)
   if jokerPos <= length(deck) - 2
     inter = deck[jokerPos]
     deck[jokerPos] = deck[jokerPos+1]
@@ -49,7 +49,7 @@ function next_solitaire(deckIn)
     split_deck[1] = split_deck[end]
     split_deck[end] = inter
   end
-  deck = flatten(split_deck)
+  deck = collect(Iterators.flatten(split_deck))
 # take bottom of deck and put it just above last card
   cardsToTake = (deck[end] > 52) ? 0 : deck[end]
 
@@ -57,28 +57,34 @@ function next_solitaire(deckIn)
   append!(intermediate, [deck[end]])
   deck = intermediate
 
-  return deck
+  return collect(deck)
 end
 
-function keychar_from_deck(deck::Vector)
+function keychar_from_deck(deck::AbstractVector{T}) :: Integer where {T<:Integer}
   # given a deck, returns an integer which is the Solitaire key value
   # output by that deck
   deck[((deck[1]==54 ? 53 : deck[1]) % length(deck)) + 1]
 end
 
-type SolitaireKeyStream
-  deck::Vector
+struct SolitaireKeyStreamStruct
+  deck::AbstractVector{Integer}
 end
 
-Base.start(b::SolitaireKeyStream) = (next_solitaire(b.deck))
-function Base.next(b::SolitaireKeyStream, state)
-  curState = state
+function Base.iterate(b::SolitaireKeyStreamStruct)
+  (0, next_solitaire(b.deck))
+end
+
+function Base.iterate(b::SolitaireKeyStreamStruct, state)
+  curState = state::AbstractVector{Integer}
   while keychar_from_deck(curState) > 52
     curState = next_solitaire(curState)
   end
-  (keychar_from_deck(curState), next_solitaire(curState))
+  (keychar_from_deck(curState)::Integer, next_solitaire(curState))
 end
-Base.done(b::SolitaireKeyStream, state) = false
+
+function SolitaireKeyStream(initialDeck::AbstractVector{T}) where {T<:Integer}
+  Iterators.filter(i -> i <= 52, Iterators.drop(SolitaireKeyStreamStruct(initialDeck), 1))
+end
 
 """
 Encrypts the given plaintext according to the Solitaire cipher.
@@ -86,16 +92,11 @@ The key may be given either as a vector initial deck, where the cards are
 1 through 54 (the two jokers being 53, 54), or as a string.
 Schneier's keying algorithm is used to key the deck if the key is a string.
 """
-function encrypt_solitaire(string, initialDeck::Vector)
+function encrypt_solitaire(string, initialDeck::AbstractVector{T}) :: AbstractString where {T<:Integer}
   inp = uppercase(letters_only(string))
   ans = ""
-  i = 0
-  for keyval in SolitaireKeyStream(initialDeck)
-    i += 1
-    if i > length(inp)
-      break
-    end
-    ans *= encrypt_caesar(inp[i], keyval)
+  for (keyval::Integer, input::Char) in zip(SolitaireKeyStream(initialDeck), collect(inp))
+    ans *= encrypt_caesar(input, keyval)
   end
   return ans
 end
@@ -110,17 +111,13 @@ function decrypt_solitaire(string, initialDeck::Vector)
   inp = uppercase(letters_only(string))
   ans = ""
   i = 0
-  for keyval in SolitaireKeyStream(initialDeck)
-    i += 1
-    if i > length(inp)
-      break
-    end
-    ans *= decrypt_caesar(inp[i], keyval)
+  for (keyval, input) in zip(SolitaireKeyStream(initialDeck), collect(inp))
+    ans *= decrypt_caesar(input, keyval)
   end
   return ans
 end
 
-function key_deck(key::AbstractString)
+function key_deck(key::AbstractString) :: AbstractVector{Integer}
   # returns the Solitaire deck after it has been keyed with the given string
   deck = collect(1:54)
   for keyval in uppercase(letters_only(key))
@@ -133,8 +130,9 @@ function key_deck(key::AbstractString)
   deck
 end
 
-function encrypt_solitaire(string, key::AbstractString)
-  encrypt_solitaire(string, key_deck(key))
+function encrypt_solitaire(string::AbstractString, key::AbstractString) :: AbstractString
+  key = key_deck(key)
+  encrypt_solitaire(string, key)
 end
 
 function decrypt_solitaire(string, key::AbstractString)

@@ -1,5 +1,5 @@
 using ClassicalCiphers
-using Base.Test
+using Test
 
 @test encrypt_caesar("THIS CODE WAS INVENTED BY JULIUS CAESAR", 3) == "WKLV FRGH ZDV LQYHQWHG EB MXOLXV FDHVDU"
 

@@ -1,10 +1,10 @@
 using ClassicalCiphers
-using Base.Test
+using Test
 
 # docs examples
 
 @test encrypt_affine("Hello, World!", 3, 4) == "ZQLLU, SUDLN!"
-@test decrypt_affine("ZQLLU, SUDLN!", 3, 4) == "hello, world!" 
+@test decrypt_affine("ZQLLU, SUDLN!", 3, 4) == "hello, world!"
 @test crack_affine("zqllu, sudln!") == ("hello, world!", (3, 4))
 
 # Wikipedia examples

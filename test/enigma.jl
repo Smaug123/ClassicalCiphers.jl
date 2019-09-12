@@ -1,5 +1,5 @@
 using ClassicalCiphers
-using Base.Test
+using Test
 
 @test (encrypt_enigma("AAA", [1,2,3], "AAA") == "BDZ")
 @test (decrypt_enigma("BDZ", [1,2,3], "AAA") == "aaa")

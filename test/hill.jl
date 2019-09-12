@@ -1,5 +1,5 @@
 using ClassicalCiphers
-using Base.Test
+using Test
 
 # Wikipedia examples
 

@@ -5,7 +5,7 @@ so encrypt_caesar("abc", 1) == "BCD".
 
 Converts the input to uppercase.
 """
-function encrypt_caesar(plaintext, key::Integer)
+function encrypt_caesar(plaintext, key::T) where {T<:Integer}
   # plaintext: string; key: integer offset, so k=1 sends "a" to "b"
   key = ((key-1) % 26) + 1
   keystr = join([collect(Char(97+key):'z'); collect('a':Char(97+key-1))])

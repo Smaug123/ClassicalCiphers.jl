@@ -29,10 +29,6 @@ function rotateRightStr(st::AbstractString, n)
   join(rotateRight(split(st, ""), n), "")
 end
 
-flatten{T}(a::Array{T,1}) = any(x->isa(x,Array),a)? flatten(vcat(map(flatten,a)...)): a
-flatten{T}(a::Array{T}) = reshape(a,prod(size(a)))
-flatten(a)=a
-
 function splitBy(arr, func)
   # implementation of the Mathematica function SplitBy
   # splits the array into sublists so that each list has the same value of func
@@ -58,7 +54,7 @@ function get_trigram_fitnesses()
 
   for l in lines
     (ngram, fitness) = split(l)
-    dict[ngram] = parse(fitness)
+    dict[ngram] = parse(Int32, fitness)
   end
 
   close(f)
@@ -72,7 +68,7 @@ Performs a trigram analysis on the input string, to determine how close it
 is to English. That is, splits the input string into groups of three letters,
 and assigns a score based on the frequency of the trigrams in true English.
 """
-function string_fitness(input; alreadystripped=false)
+function string_fitness(input::AbstractString; alreadystripped=false)
   if !alreadystripped
     str = letters_only(input)
   else

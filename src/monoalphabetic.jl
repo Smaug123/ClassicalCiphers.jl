@@ -47,7 +47,7 @@ function decrypt_monoalphabetic(ciphertext, key::AbstractString)
   # working in lowercase; key is assumed only to have each element appearing once
   # and to be in lowercase
   # so decrypt_monoalphabetic("cb", "cbade…") is "ab"
-  dict = Dict(a => Char(96 + search(lowercase(key), a)) for a in lowercase(key))
+  dict = Dict(a => Char(96 + findfirst(i -> i == a, lowercase(key))) for a in lowercase(key))
   encrypt_monoalphabetic(lowercase(ciphertext), dict)
 end
 

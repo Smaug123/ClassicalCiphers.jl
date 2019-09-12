@@ -73,14 +73,14 @@ Ring is a string - for example, "AAA" - being the offset applied to each rotor.
 skip_stecker_check=false, which when `true` skips validation of stecker settings.
 """
 function encrypt_enigma(plaintext,
-						rotors::Array{Integer, 1}, key::AbstractString;
+						rotors::Array{T, 1}, key::AbstractString;
 						reflector_id='B', ring::AbstractString = "AAA",
 						stecker = Tuple{Char, Char}[],
-						skip_stecker_check = false)
+						skip_stecker_check = false) where {T<:Integer}
 	parsed_stecker = parse_stecker(stecker)
 	# validate stecker settings
 	if !skip_stecker_check
-		if Iterators.flatten(parsed_stecker) != unique(Iterators.flatten(parsed_stecker))
+		if collect(Iterators.flatten(parsed_stecker)) != collect(unique(Iterators.flatten(parsed_stecker)))
 			error("No letter may appear more than once in stecker settings.")
 		end
 	end

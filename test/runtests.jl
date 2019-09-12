@@ -1,9 +1,10 @@
 using ClassicalCiphers
 using Test
 
-tests = ["vigenere", "monoalphabetic", "solitaire",
-		 "caesar", "portas", "affine", "hill", "playfair",
-		 "enigma"]
+tests = [#"vigenere", "monoalphabetic", "caesar", "portas", "affine", "enigma", "hill",
+         "solitaire",
+         "playfair",
+        ]
 
 println("Running tests:")
 

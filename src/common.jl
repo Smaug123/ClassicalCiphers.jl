@@ -54,7 +54,7 @@ function get_trigram_fitnesses()
 
   for l in lines
     (ngram, fitness) = split(l)
-    dict[ngram] = parse(Int64, fitness)
+    dict[ngram] = parse(Int32, fitness)
   end
 
   close(f)
@@ -68,7 +68,7 @@ Performs a trigram analysis on the input string, to determine how close it
 is to English. That is, splits the input string into groups of three letters,
 and assigns a score based on the frequency of the trigrams in true English.
 """
-function string_fitness(input; alreadystripped=false)
+function string_fitness(input::AbstractString; alreadystripped=false)
   if !alreadystripped
     str = letters_only(input)
   else

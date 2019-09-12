@@ -57,7 +57,7 @@ function next_solitaire(deckIn)
   append!(intermediate, [deck[end]])
   deck = intermediate
 
-  return deck
+  return collect(deck)
 end
 
 function keychar_from_deck(deck::Vector)
@@ -75,13 +75,17 @@ function Base.iterate(b::SolitaireKeyStream)
 end
 
 function Base.iterate(b::SolitaireKeyStream, state)
+  print("hi2")
   curState = state
+  print("hi")
+  print(curState)
   while keychar_from_deck(curState) > 52
+    print(curState)
+    print("\n")
     curState = next_solitaire(curState)
   end
   (keychar_from_deck(curState), next_solitaire(curState))
 end
-#Base.done(b::SolitaireKeyStream, state) = false
 
 """
 Encrypts the given plaintext according to the Solitaire cipher.
@@ -94,6 +98,7 @@ function encrypt_solitaire(string, initialDeck::Vector)
   ans = ""
   i = 0
   for keyval in SolitaireKeyStream(initialDeck)
+    print(keyval)
     i += 1
     if i > length(inp)
       break

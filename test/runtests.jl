@@ -11,6 +11,7 @@ tests = [
          "enigma",
          "hill",
          "solitaire",
+         "railfence"
         ]
 
 println("Running tests:")

@@ -1,5 +1,5 @@
 function keystr_to_dict(keystr::AbstractString)
-  Dict{Char, Char}(map(x -> (Char(x[1]+64), x[2]), enumerate(uppercase(keystr))))
+  Dict{Char, Char}(map(x -> (Char(x[1] + 64), x[2]), enumerate(uppercase(keystr))))
 end
 
 """
@@ -13,9 +13,9 @@ once, and the string is converted to lowercase.
 If the key is given as a Dict, the only substitutions made are those in the Dict;
 in particular, the string is not converted to lowercase automatically.
 """
-function encrypt_monoalphabetic(plaintext, key::Dict)
+function encrypt_monoalphabetic(plaintext, key::Dict{Char, Char})
   # plaintext: string; key: dictionary of {'a' => 'b'}, etc, for replacing 'a' with 'b'
-  join([(i in keys(key) ? key[i] : i) for i in plaintext], "")
+  join(eltype(keys(key))[get(key, i, i) for i in plaintext])
 end
 
 """
@@ -29,7 +29,7 @@ once, and the string is converted to lowercase.
 If the key is given as a Dict, the only substitutions made are those in the Dict;
 in particular, the string is not converted to lowercase automatically.
 """
-function decrypt_monoalphabetic(ciphertext, key::Dict)
+function decrypt_monoalphabetic(ciphertext, key::Dict{Char, Char})
   # ciphertext: string; key: dictionary of {'a' => 'b'}, etc, where the plaintext 'a' was
   # replaced by ciphertext 'b'. No character should appear more than once
   # as a value in {key}.
@@ -47,7 +47,7 @@ function decrypt_monoalphabetic(ciphertext, key::AbstractString)
   # working in lowercase; key is assumed only to have each element appearing once
   # and to be in lowercase
   # so decrypt_monoalphabetic("cb", "cbade…") is "ab"
-  dict = Dict(a => Char(96 + findfirst(i -> i == a, lowercase(key))) for a in lowercase(key))
+  dict = Dict{Char, Char}(a => Char(96 + findfirst(i -> i == a, lowercase(key))) for a in lowercase(key))
   encrypt_monoalphabetic(lowercase(ciphertext), dict)
 end
 
@@ -66,7 +66,7 @@ function swap_two(str)
     indices = rand(1:length(str), 2)
   end
 
-  join([i == indices[1] ? str[indices[2]] : (i == indices[2] ? str[indices[1]] : str[i]) for i in 1:length(str)], "")
+  join(Integer[i == indices[1] ? str[indices[2]] : (i == indices[2] ? str[indices[1]] : str[i]) for i in 1:length(str)])
 end
 
 """
@@ -89,13 +89,13 @@ acceptance_prob=((e, ep, t) -> ep>e ? 1 : exp(-(e-ep)/t)), which is the probabil
   with which we accept new key of fitness ep, given that the current key has fitness e,
   at temperature t.
 """
-function crack_monoalphabetic(ciphertext; starting_key="",
-                              min_temp=0.0001, temp_factor=0.97,
-                              acceptance_prob=((e,ep,t) -> ep > e ? 1. : exp(-(e-ep)/t)),
-                              chatty=0,
-                              rounds=1)
+function crack_monoalphabetic(ciphertext; starting_key::AbstractString = "",
+                              min_temp::F = 0.0001, temp_factor::F = 0.97,
+                              acceptance_prob::F = ((e,ep,t) -> ep > e ? 1. : exp(-(e-ep)/t)),
+                              chatty::T = 0,
+                              rounds::T = 1) where {T <: Integer, F <: AbstractFloat}
 
-  if starting_key == ""
+  if isempty(starting_key)
   # most common letters
     commonest = "ETAOINSHRDLUMCYWFGBPVKZJXQ"
     freqs = frequencies(uppercase(letters_only(ciphertext)))
@@ -105,13 +105,13 @@ function crack_monoalphabetic(ciphertext; starting_key="",
       end
     end
 
-    freqs_input = sort(collect(freqs), by = tuple -> last(tuple), rev=true)
+    freqs_input = sort(collect(freqs), by = tuple -> last(tuple), rev = true)
     start_key = fill('a', 26)
     for i in 1:26
-      start_key[Int(commonest[i])-64] = freqs_input[i][1]
+      start_key[Int(commonest[i]) - 64] = first(freqs_input[i])
     end
 
-    key = join(start_key, "")
+    key = join(start_key)
   else
     key = starting_key
   end
@@ -122,16 +122,15 @@ function crack_monoalphabetic(ciphertext; starting_key="",
 
   stripped_ciphertext = letters_only(ciphertext)
   fitness = string_fitness(decrypt_monoalphabetic(stripped_ciphertext, key))
-  total_best_fitness = fitness
-  total_best_key = key
+  total_best_fitness, total_best_key = fitness, key
   total_best_decrypt = decrypt_monoalphabetic(ciphertext, key)
 
   for roundcount in 1:rounds
-    temp = 10^((roundcount-1)/rounds)
+    temp = 10^((roundcount - 1) / rounds)
     while temp > min_temp
-      for i in 1:round(Int, min(ceil(1/temp), 10))
+      for i in 1:round(Int, min(ceil(1 / temp), 10))
         neighbour = swap_two(key)
-        new_fitness = string_fitness(decrypt_monoalphabetic(stripped_ciphertext, neighbour), alreadystripped=true)
+        new_fitness = string_fitness(decrypt_monoalphabetic(stripped_ciphertext, neighbour), alreadystripped = true)
         if new_fitness > total_best_fitness
           total_best_fitness = new_fitness
           total_best_key = neighbour
@@ -163,8 +162,7 @@ function crack_monoalphabetic(ciphertext; starting_key="",
       end
     end
 
-    key = total_best_key
-    fitness = total_best_fitness
+    key, fitness = total_best_key, total_best_fitness
     temp = 1
   end
 

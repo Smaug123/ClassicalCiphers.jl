@@ -8,7 +8,7 @@ Converts the text to uppercase.
 function encrypt_portas(plaintext, key_in::AbstractString)
   key = uppercase(letters_only(key_in))
   plaintext = uppercase(plaintext)
-  keyarr = [div(Int(ch) - 65, 2) for ch in key]
+  keyarr = Int[div(Int(ch) - 65, 2) for ch in key]
 
   keycounter = 1
   ans = IOBuffer()

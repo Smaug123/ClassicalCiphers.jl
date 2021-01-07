@@ -5,10 +5,10 @@ so encrypt_caesar("abc", 1) == "BCD".
 
 Converts the input to uppercase.
 """
-function encrypt_caesar(plaintext, key::T) where {T<:Integer}
+function encrypt_caesar(plaintext, key::T) where {T <: Integer}
   # plaintext: string; key: integer offset, so k=1 sends "a" to "b"
-  key = ((key-1) % 26) + 1
-  keystr = join([collect(Char(97+key):'z'); collect('a':Char(97+key-1))])
+  key = ((key - 1) % 26) + 1
+  keystr = join(vcat(collect(Char(97 + key):'z'), collect('a':Char(97 + key - 1))))
   encrypt_monoalphabetic(plaintext, keystr)
 end
 
@@ -19,10 +19,10 @@ so decrypt_caesar("abcd", 1) == "zabc".
 
 Converts the input to lowercase.
 """
-function decrypt_caesar(ciphertext, key::Integer)
+function decrypt_caesar(ciphertext, key::T) where {T <: Integer}
   # ciphertext: string; key: integer offset, so k=1 decrypts "B" as "a"
-  key = ((key-1) % 26) + 1
-  lowercase(encrypt_caesar(ciphertext, 26-key))
+  key = ((key - 1) % 26) + 1
+  lowercase(encrypt_caesar(ciphertext, 26 - key))
 end
 
 """
@@ -35,8 +35,8 @@ With cleverness=1, maximises the string's total fitness.
 
 Converts the input to lowercase.
 """
-function crack_caesar(ciphertext; cleverness=1)
-  texts = [(decrypt_caesar(ciphertext,key), key) for key in 0:25]
+function crack_caesar(ciphertext; cleverness::T = 1) where {T <: Integer}
+  texts = Tuple{String, Int}[(decrypt_caesar(ciphertext,key), key) for key in 0:25]
   if cleverness == 1
     texts = sort(texts, by=(x -> string_fitness(first(x))))
   else

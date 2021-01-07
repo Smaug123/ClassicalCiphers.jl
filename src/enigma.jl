@@ -1,25 +1,25 @@
 import Base.uppercase
 
-function uppercase(a::Tuple{Char, Char})
-	(uppercase(a[1]), uppercase(a[2]))
+function uppercase(a::NTuple{N, Char}) where N
+	uppercase.(a)
 end
 
 function parse_stecker(stecker::AbstractString)
-	if length(stecker) % 2 != 0
+	if !iseven(length(stecker))
 		error("Stecker setting must be of even length.")
 	end
 
-	if stecker == ""
+	if isempty(stecker)
 		steck_parsed = Tuple{Char, Char}[]
 	else
-		sp = split(stecker, "")
-		steck_parsed = [(sp[i][1], sp[i+1][1]) for i in 1:2:length(sp)]
+		sp = collect(stecker)
+		steck_parsed = Tuple{Char, Char}[(sp[i][1], sp[i + 1][1]) for i in 1:2:length(sp)]
 	end
 	steck_parsed
 end
 
 function parse_stecker(stecker::Array{Tuple{Char, Char}})
-	if stecker == []
+	if isempty(stecker)
 		return Array{Tuple{Char, Char}, 1}()
 	else
 		return stecker
@@ -45,7 +45,7 @@ function parse_reflector(reflector::AbstractString)
 
 	ans = uppercase(reflector)
 
-	if ans != join(unique(ans), "")
+	if ans != join(unique(ans))
 		error("Reflector must not contain any character used more than once.")
 	end
 
@@ -76,16 +76,16 @@ function encrypt_enigma(plaintext,
 						rotors::Array{T, 1}, key::AbstractString;
 						reflector_id='B', ring::AbstractString = "AAA",
 						stecker = Tuple{Char, Char}[],
-						skip_stecker_check = false) where {T<:Integer}
+						skip_stecker_check = false) where {T <: Integer}
 	parsed_stecker = parse_stecker(stecker)
 	# validate stecker settings
 	if !skip_stecker_check
-		if collect(Iterators.flatten(parsed_stecker)) != collect(unique(Iterators.flatten(parsed_stecker)))
+		# if collect(Iterators.flatten(parsed_stecker)) != collect(unique(Iterators.flatten(parsed_stecker)))
+		if collect(parsed_stecker) != unique(parsed_stecker) # do we need to flatten? ^
 			error("No letter may appear more than once in stecker settings.")
 		end
 	end
 	parsed_stecker::Array{Tuple{Char, Char}} = map(uppercase, parsed_stecker)
-
 
 	# validate ring settings
 	if length(ring) != 3
@@ -126,13 +126,12 @@ function encrypt_enigma(plaintext,
 	plaintext = uppercase(letters_only(plaintext))
 
 	# initialisation of the machine
-
 	rotor_layouts = ["EKMFLGDQVZNTOWYHXUSPAIBRCJ",
 					 "AJDKSIRUXBLHWTMCQGZNPYFVOE",
 					 "BDFHJLCPRTXVZNYEIWGAKMUSQO",
 					 "ESOVPZJAYQUIRHXLNFTGKDCMWB",
 					 "VZBRGITYUPSDNHLXAWMJQOFECK"]
-	notches = [17,5,22,10,26]
+	notches = Int[17,5,22,10,26]
 
 	rotor1 = keystr_to_dict(rotor_layouts[rotors[1]])
 	notch1 = notches[rotors[1]]
@@ -141,25 +140,24 @@ function encrypt_enigma(plaintext,
 	rotor3 = keystr_to_dict(rotor_layouts[rotors[3]])
 	notch3 = notches[rotors[3]]
 
-	rotor1_inv = Dict{Char, Char}([reverse(a) for a in rotor1])
-	rotor2_inv = Dict{Char, Char}([reverse(a) for a in rotor2])
-	rotor3_inv = Dict{Char, Char}([reverse(a) for a in rotor3])
+	rotor1_inv = Dict{Char, Char}(Pair{Char, Char}[reverse(a) for a in rotor1])
+	rotor2_inv = Dict{Char, Char}(Pair{Char, Char}[reverse(a) for a in rotor2])
+	rotor3_inv = Dict{Char, Char}(Pair{Char, Char}[reverse(a) for a in rotor3])
 
 	# apply the key as part of initialisation; incorporates ring
-	key_offsets = [26+Int(ch)-65 for ch in key]
-	notch1 = (key_offsets[1]*26+notch1-key_offsets[1]) % 26
-	notch2 = (key_offsets[2]*26+notch2-key_offsets[2]) % 26
-	notch3 = (key_offsets[3]*26+notch3-key_offsets[3]) % 26
+	key_offsets = Int[26 + Int(ch) - 65 for ch in key]
+	notch1 = (key_offsets[1] * 26 + notch1 - key_offsets[1]) % 26
+	notch2 = (key_offsets[2] * 26 + notch2 - key_offsets[2]) % 26
+	notch3 = (key_offsets[3] * 26 + notch3 - key_offsets[3]) % 26
 
-	key_offsets = key_offsets .- [Int(ring[i])-65 for i in 1:3]
+	key_offsets = key_offsets .- Int[Int(ring[i]) - 65 for i in 1:3]
 
 	# We receive a character; the rotors increment; then:
 	# the character goes through the plugboard
 	# the character then goes through rotor3, then rotor2, then rotor1
 	# then the reflector, then the inverse of rotor 1, 2, 3
 	# finally the plugboard again
-
-	plugboard_dict = Dict([parsed_stecker; map(reverse, parsed_stecker)])
+	plugboard_dict = Dict(vcat(parsed_stecker, map(reverse, parsed_stecker)))
 
     ans = IOBuffer()
 
@@ -167,10 +165,7 @@ function encrypt_enigma(plaintext,
 	rotor2movements = key_offsets[2]
 	rotor1movements = key_offsets[1]
 
-	for i in 1:length(plaintext)
-
-		working_ch = plaintext[i]
-
+	for (i, working_ch) in enumerate(plaintext)
 		# rotate rotors
 		notch3 -= 1
 		rotor3movements += 1
@@ -203,42 +198,42 @@ function encrypt_enigma(plaintext,
 
 
 		# plugboard
-		working_ch = encrypt_monoalphabetic(working_ch, plugboard_dict)[1]
+		working_ch = first(encrypt_monoalphabetic(working_ch, plugboard_dict))
 
 		# rotors
 		# comes in as…
-		working_ch = Char(65+((rotor3movements+Int(working_ch)-65) % 26))
-		working_ch = encrypt_monoalphabetic(working_ch, rotor3)[1]
+		working_ch = Char(65 + ((rotor3movements + Int(working_ch) - 65) % 26))
+		working_ch = first(encrypt_monoalphabetic(working_ch, rotor3))
 
  		# comes in as…
- 		working_ch = Char(65+(((26*rotor3movements)-rotor3movements+rotor2movements+Int(working_ch)-65) % 26))
+ 		working_ch = Char(65 + (((26 * rotor3movements) - rotor3movements + rotor2movements + Int(working_ch) - 65) % 26))
 		working_ch = encrypt_monoalphabetic(working_ch, rotor2)[1]
 
  		# comes in as…
- 		working_ch = Char((((26*rotor2movements) + Int(working_ch)-65 - rotor2movements + rotor1movements) % 26) + 65)
-		working_ch = encrypt_monoalphabetic(working_ch, rotor1)[1]
+ 		working_ch = Char((((26 * rotor2movements) + Int(working_ch) - 65 - rotor2movements + rotor1movements) % 26) + 65)
+		working_ch = first(encrypt_monoalphabetic(working_ch, rotor1))
 
 		# reflector
 		# comes in as…
-		working_ch = Char((26*rotor1movements + Int(working_ch) - 65 - rotor1movements) % 26 + 65)
-		working_ch = encrypt_monoalphabetic(working_ch, reflector)[1]
+		working_ch = Char((26 * rotor1movements + Int(working_ch) - 65 - rotor1movements) % 26 + 65)
+		working_ch = first(encrypt_monoalphabetic(working_ch, reflector))
 
 		# rotors
 		# comes in as…
-		working_ch = Char((Int(working_ch)-65+rotor1movements) % 26 + 65)
+		working_ch = Char((Int(working_ch) - 65 + rotor1movements) % 26 + 65)
 
 		# we use encrypt_monoalphabetic and inverse-dictionaries already computed, for speed,
 		# where it is more natural to use decrypt_monoalphabetic
-		working_ch = uppercase(encrypt_monoalphabetic(working_ch, rotor1_inv))[1]
- 		working_ch = Char(65+((rotor1movements*26 + rotor2movements - rotor1movements +Int(working_ch)-65) % 26))
-		working_ch = uppercase(encrypt_monoalphabetic(working_ch, rotor2_inv))[1]
- 		working_ch = Char(65+((26*rotor2movements + rotor3movements-rotor2movements+Int(working_ch)-65) % 26))
-		working_ch = uppercase(encrypt_monoalphabetic(working_ch, rotor3_inv))[1]
+		working_ch = uppercase(first(encrypt_monoalphabetic(working_ch, rotor1_inv)))
+ 		working_ch = Char(65 + ((rotor1movements * 26 + rotor2movements - rotor1movements + Int(working_ch) - 65) % 26))
+		working_ch = uppercase(first(encrypt_monoalphabetic(working_ch, rotor2_inv)))
+ 		working_ch = Char(65 + ((26 * rotor2movements + rotor3movements - rotor2movements + Int(working_ch) - 65) % 26))
+		working_ch = uppercase(first(encrypt_monoalphabetic(working_ch, rotor3_inv)))
 
 		# plugboard
 		# comes in as…
-		working_ch = Char(65+(((26*rotor3movements)-rotor3movements+Int(working_ch)-65) % 26))
-		working_ch = encrypt_monoalphabetic(working_ch, plugboard_dict)[1]
+		working_ch = Char(65 + (((26 * rotor3movements) - rotor3movements + Int(working_ch) - 65) % 26))
+		working_ch = first(encrypt_monoalphabetic(working_ch, plugboard_dict))
 
 		print(ans, working_ch)
 	end

@@ -18,6 +18,7 @@ The Solitaire cipher is included for completeness, though it is perhaps not stri
 * [Playfair]
 * [Enigma (M3 Army)][Enigma]
 * [Solitaire]
+* [Rail Fence]
 
 ## Gotchas
 
@@ -358,6 +359,22 @@ decrypt_solitaire("EXKYI ZSGEH UNTIQ", collect(1:54))
 # outputs "aaaaaaaaaaaaaaa", as per https://www.schneier.com/code/sol-test.txt
 ```
 
+### Rail Fence cipher
+
+```julia
+julia> construct_railfence("WE ARE DISCOVERED. FLEE AT ONCE", 3)
+3×26 Array{Char,2}:
+ 'W'  '□'  '□'  '□'  'E'  '□'  '□'  '□'  'C'  '□'  '□'  '□'  'R'  …  '□'  '□'  'F'  '□'  '□'  '□'  'A'  '□'  '□'  '□'  'C'  '□'
+ '□'  'E'  '□'  'R'  '□'  'D'  '□'  'S'  '□'  'O'  '□'  'E'  '□'     '□'  '.'  '□'  'L'  '□'  'E'  '□'  'T'  '□'  'N'  '□'  'E'
+ '□'  '□'  'A'  '□'  '□'  '□'  'I'  '□'  '□'  '□'  'V'  '□'  '□'     'D'  '□'  '□'  '□'  'E'  '□'  '□'  '□'  'O'  '□'  '□'  '□'
+
+julia> encrypt_railfence("WE ARE DISCOVERED. FLEE AT ONCE", 3) # this reads the above matrix row by row
+"WECRFACERDSOEE.LETNEAIVDEO"
+
+julia> decrypt_railfence("WECRFACERDSOEE.LETNEAIVDEO", 3)
+"wearediscovered.fleeatonce"
+```
+
 [Caesar]: https://en.wikipedia.org/wiki/Caesar_cipher
 [Affine]: https://en.wikipedia.org/wiki/Affine_cipher
 [Vigenère]: https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher
@@ -367,3 +384,4 @@ decrypt_solitaire("EXKYI ZSGEH UNTIQ", collect(1:54))
 [Hill]: https://en.wikipedia.org/wiki/Hill_cipher
 [Playfair]: https://en.wikipedia.org/wiki/Playfair_cipher
 [Enigma]: https://en.wikipedia.org/wiki/Enigma_machine
+[Rail Fence]: https://en.wikipedia.org/wiki/Rail_fence_cipher

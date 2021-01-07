@@ -15,7 +15,7 @@ function parse_stecker(stecker::AbstractString)
 		sp = collect(stecker)
 		steck_parsed = Tuple{Char, Char}[(sp[i][1], sp[i + 1][1]) for i in 1:2:length(sp)]
 	end
-	steck_parsed
+	return steck_parsed
 end
 
 function parse_stecker(stecker::Array{Tuple{Char, Char}})
@@ -24,6 +24,7 @@ function parse_stecker(stecker::Array{Tuple{Char, Char}})
 	else
 		return stecker
 	end
+	return nothing
 end
 
 function parse_reflector(reflector::Char)
@@ -36,6 +37,7 @@ function parse_reflector(reflector::Char)
 	else
 		error("Reflector $(reflector) unrecognised.")
 	end
+	return nothing
 end
 
 function parse_reflector(reflector::AbstractString)
@@ -49,7 +51,7 @@ function parse_reflector(reflector::AbstractString)
 		error("Reflector must not contain any character used more than once.")
 	end
 
-	ans
+	return ans
 end
 
 """
@@ -238,9 +240,8 @@ function encrypt_enigma(plaintext,
 		print(ans, working_ch)
 	end
 
-	uppercase(String(take!(ans)))
+	return uppercase(String(take!(ans)))
 end
 
-function decrypt_enigma(args1...; args2...)
+decrypt_enigma(args1...; args2...) =
 	lowercase(encrypt_enigma(args1...; args2...))
-end

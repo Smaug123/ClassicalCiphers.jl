@@ -28,7 +28,7 @@ function encrypt_playfair(plaintext, key::AbstractString; combined::AbstractPair
 	# make combinations in plaintext
 	plaintext_sanitised = encrypt_monoalphabetic(plaintext, D)
 
-	encrypt_playfair(plaintext_sanitised, keysquare, combined = combined)
+	return encrypt_playfair(plaintext_sanitised, keysquare, combined = combined)
 end
 
 """
@@ -69,14 +69,14 @@ function encrypt_playfair(plaintext, key::Array{Char, 2}; stripped::Bool = false
 
 	i = 1
 	while i < length(plaintext_sanitised)
-      if plaintext_sanitised[i] == plaintext_sanitised[i + 1]
-      	if plaintext_sanitised[i] != padding_char
-      		plaintext_sanitised = plaintext_sanitised[1:i] * string(padding_char) * plaintext_sanitised[(i + 1):end]
-      	else
-      		plaintext_sanitised = plaintext_sanitised[1:i] * string(backup_padding_char) * plaintext_sanitised[(i + 1):end]
+        if plaintext_sanitised[i] == plaintext_sanitised[i + 1]
+	      	if plaintext_sanitised[i] != padding_char
+	      		plaintext_sanitised = plaintext_sanitised[1:i] * string(padding_char) * plaintext_sanitised[(i + 1):end]
+	      	else
+      			plaintext_sanitised = plaintext_sanitised[1:i] * string(backup_padding_char) * plaintext_sanitised[(i + 1):end]
+      		end
       	end
-      end
-      i += 2
+      	i += 2
     end
 
     if isodd(length(plaintext_sanitised))
@@ -115,13 +115,13 @@ function encrypt_playfair(plaintext, key::Array{Char, 2}; stripped::Bool = false
     	i += 2
     end
 
-    String(take!(ans))
+    return String(take!(ans))
 end
 
 
 function decrypt_playfair(ciphertext, key::AbstractString; combined::AbstractPair{Char, Char} = ('I', 'J'))
 	keysquare = playfair_key_to_square(key, combined)
-	decrypt_playfair(ciphertext, keysquare, combined = combined)
+	return decrypt_playfair(ciphertext, keysquare, combined = combined)
 end
 
 """
@@ -132,5 +132,5 @@ Does not attempt to delete X's inserted as padding for double letters.
 function decrypt_playfair(ciphertext, key::Array{Char, 2}; combined::AbstractPair{Char, Char} = ('I', 'J'))
 	# to obtain the decrypting keysquare, reverse every row and every column
 	keysquare = rot180(key)
-	lowercase(encrypt_playfair(ciphertext, keysquare, combined = combined))
+	return lowercase(encrypt_playfair(ciphertext, keysquare, combined = combined))
 end

@@ -36,7 +36,8 @@ function encrypt_hill(plaintext::AbstractString, key::AbstractArray{T, 2}) where
     		print(ans, Char(x))
     	end
     end
-    String(take!(ans))
+	
+    return String(take!(ans))
 end
 
 
@@ -50,12 +51,12 @@ function encrypt_hill(plaintext::AbstractString, key::AbstractString)
 
 	key_matrix = reshape(keys, matrix_dim, matrix_dim)
 
-	encrypt_hill(plaintext, transpose(key_matrix))
+	return encrypt_hill(plaintext, transpose(key_matrix))
 end
 
 function minor(mat::AbstractArray{T, 2}, i::K, j::K) where {T <: Integer, K <: Integer}
 	d = det(mat[vcat(1:(i - 1), (i + 1):end), vcat(1:(j - 1), (j + 1):end)])
-	round(Integer, d)
+	return round(Integer, d)
 end
 
 """
@@ -64,7 +65,7 @@ Computes the adjugate matrix for given matrix.
 function adjugate(mat::AbstractArray{T, 2}) where {T <: Integer}
 	arr = Integer[(-1)^(i+j) * minor(mat, i, j) for (i, j) in Iterators.product(1:size(mat, 1), 1:size(mat, 2))]
 	ans = reshape(arr, size(mat))
-	Array{Integer, 2}(transpose(ans))
+	return Array{Integer, 2}(transpose(ans))
 end
 
 function decrypt_hill(ciphertext, key::AbstractArray{T, 2}) where {T<:Integer}
@@ -81,7 +82,7 @@ function decrypt_hill(ciphertext, key::AbstractArray{T, 2}) where {T<:Integer}
     inverse_mat = inverse_mat .% 26
     inverse_mat = (inverse_mat .+ (26 * 26)) .% 26
 
-    lowercase(encrypt_hill(ciphertext, inverse_mat))
+    return lowercase(encrypt_hill(ciphertext, inverse_mat))
 end
 
 function decrypt_hill(ciphertext, key::AbstractString)
@@ -93,5 +94,5 @@ function decrypt_hill(ciphertext, key::AbstractString)
 	keys = map(x -> Int(x) - 65, collect(uppercase(letters_only(key))))
 	key_matrix = reshape(keys, matrix_dim, matrix_dim)
 
-	decrypt_hill(ciphertext, transpose(key_matrix))
+	return decrypt_hill(ciphertext, transpose(key_matrix))
 end

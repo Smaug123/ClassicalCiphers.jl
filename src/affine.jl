@@ -16,7 +16,7 @@ function encrypt_affine(plaintext, mult::T, add::T; offset::T = 0) where {T <: I
 	end
 
 	keystr = join(Char[Char(((mult * i + add) % 26) + 97 - offset) for i in offset:(25 + offset)])
-    encrypt_monoalphabetic(plaintext, keystr)
+    return encrypt_monoalphabetic(plaintext, keystr)
 end
 
 """
@@ -37,7 +37,7 @@ function decrypt_affine(ciphertext, mult::T, add::T; offset=0) where {T <: Integ
 	end
 
 	keystr = join(Char[Char(((mult*i + add) % 26) + 97 - offset) for i in offset:25+offset], "")
-	decrypt_monoalphabetic(ciphertext, keystr)
+	return decrypt_monoalphabetic(ciphertext, keystr)
 end
 
 function max_by(arr::AbstractArray, f::Function)
@@ -57,7 +57,7 @@ function max_by(arr::AbstractArray, f::Function)
 			end
 		end
 	end
-	currAns
+	return currAns
 end
 
 """
@@ -72,8 +72,7 @@ add=-1, which specifies the additive constant if known.
 function crack_affine(ciphertext; mult::T = 0, add::T = -1) where {T <: Integer}
 	mults = mult != 0 ? Int[mult] : Int[i for i in filter(x -> (x % 2 != 0 && x % 13 != 0), 1:25)]
 	adds = add != -1 ? Int[add] : (0:25)
-
 	possible_keys = Iterators.product(mults, adds)
-
-	reverse(max_by(Tuple{eltype(possible_keys), AbstractString}[(i, decrypt_affine(ciphertext, i[1], i[2])) for i in possible_keys], x -> string_fitness(x[2])))
+	
+	return reverse(max_by(Tuple{eltype(possible_keys), AbstractString}[(i, decrypt_affine(ciphertext, i[1], i[2])) for i in possible_keys], x -> string_fitness(x[2])))
 end

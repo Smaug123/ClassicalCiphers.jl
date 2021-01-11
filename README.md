@@ -19,6 +19,7 @@ The Solitaire cipher is included for completeness, though it is perhaps not stri
 * [Enigma (M3 Army)][Enigma]
 * [Solitaire]
 * [Rail Fence]
+* [Substitution]
 
 ## Gotchas
 
@@ -375,6 +376,28 @@ julia> decrypt_railfence("WECRFACERDSOEE.LETNEAIVDEO", 3)
 "wearediscovered.fleeatonce"
 ```
 
+### Substitution cipher
+
+```julia
+julia> encrypt_substitution("Hello, this is plaintext", "abcdefghijklmnopqrstuvwxyz", "qwertyuiopasdfghjklzxcvbnm")
+"ITSSG, ZIOL OL HSQOFZTBZ"
+
+julia> encrypt_substitution("Hello, this is plaintext", "qwertyuiopasdfghjklzxcvbnm")
+"ITSSG, ZIOL OL HSQOFZTBZ"
+
+julia> encrypt_substitution("xyz", Dict('x' => 'd', 'y' => 'e', 'z' => 't'))
+"DET"
+
+julia> decrypt_substitution("ITSSG, ZIOL OL HSQOFZTBZ", "abcdefghijklmnopqrstuvwxyz", "qwertyuiopasdfghjklzxcvbnm", reverse_dict = true)
+"hello, this is plaintext"
+
+julia> encrypt_atbash("some text", "abcdefghijklmnopqrstuvwxyz")
+"HLNV GVCG"
+
+julia> decrypt_atbash("HLNV GVCG", "abcdefghijklmnopqrstuvwxyz")
+"some text"
+```
+
 [Caesar]: https://en.wikipedia.org/wiki/Caesar_cipher
 [Affine]: https://en.wikipedia.org/wiki/Affine_cipher
 [Vigenère]: https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher
@@ -385,3 +408,4 @@ julia> decrypt_railfence("WECRFACERDSOEE.LETNEAIVDEO", 3)
 [Playfair]: https://en.wikipedia.org/wiki/Playfair_cipher
 [Enigma]: https://en.wikipedia.org/wiki/Enigma_machine
 [Rail Fence]: https://en.wikipedia.org/wiki/Rail_fence_cipher
+[Substitution]: https://en.wikipedia.org/wiki/Substitution_cipher

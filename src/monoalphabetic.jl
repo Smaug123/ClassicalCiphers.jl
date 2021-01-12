@@ -1,13 +1,3 @@
-#=
-julia> @btime encrypt_monoalphabetic("THIS CODE WAS INVENTED BY JULIUS CAESAR", "DEFGHIJKLMNOPQRSTUVWXYZABC")
-  2.746 μs (21 allocations: 2.31 KiB)
-"WKLV FRGH ZDV LQYHQWHG EB MXOLXV FDHVDU"
-
-julia> @btime decrypt_monoalphabetic("WKLV FRGH ZDV LQYHQWHG EB MXOLXV FDHVDU", "DEFGHIJKLMNOPQRSTUVWXYZABC")
-  3.817 μs (31 allocations: 3.81 KiB)
-"this code was invented by julius caesar"
-=#
-
 _keystr_to_dict(keystr::AbstractString) =
     Dict{Char, Char}(Char(i + 64) => c for (i, c) in enumerate(uppercase(keystr)))
 _keystr_to_dict(A::AbstractString, B::AbstractString) =

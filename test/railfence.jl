@@ -1,6 +1,3 @@
-# using ClassicalCiphers
-# using Test
-
 @test encrypt_railfence("WE ARE DISCOVERED. FLEE AT ONCE", 3) == "WECRFACERDSOEE.LETNEAIVDEO"
 @test decrypt_railfence("WECRFACERDSOEE.LETNEAIVDEO", 3) == "wearediscovered.fleeatonce"
 @test encrypt_railfence("Julia is strong", 10) == "JULIAISGSNTOR"

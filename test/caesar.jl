@@ -1,6 +1,3 @@
-using ClassicalCiphers
-using Test
-
 @test encrypt_caesar("This code was not strictly invented by Julius Caesar, but it was reported by Roman historian Suetonius that Caesar used it, and hence the cipher was named.", 3) == "WKLV FRGH ZDV QRW VWULFWOB LQYHQWHG EB MXOLXV FDHVDU, EXW LW ZDV UHSRUWHG EB URPDQ KLVWRULDQ VXHWRQLXV WKDW FDHVDU XVHG LW, DQG KHQFH WKH FLSKHU ZDV QDPHG."
 @test encrypt_caesar("The Caesar cipher was traditionally used by shifting each letter exactly three positions down.") == "WKH FDHVDU FLSKHU ZDV WUDGLWLRQDOOB XVHG EB VKLIWLQJ HDFK OHWWHU HADFWOB WKUHH SRVLWLRQV GRZQ."
 

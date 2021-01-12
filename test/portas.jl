@@ -1,6 +1,3 @@
-using ClassicalCiphers
-using Test
-
 @test encrypt_portas("DEFENDTHEEASTWALLOFTHECASTLE", "FORTIFICATION") == uppercase("synnjscvrnrlahutukucvryrlany")
 @test decrypt_portas("synnjscvrnrlahutukucvryrlany", "FORTIFICATION") == lowercase("DEFENDTHEEASTWALLOFTHECASTLE")
 

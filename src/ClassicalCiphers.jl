@@ -12,8 +12,9 @@ include("affine.jl")
 include("hill.jl")
 include("playfair.jl")
 include("enigma.jl")
+include("railfence.jl")
 
-export encrypt_monoalphabetic, decrypt_monoalphabetic, crack_monoalphabetic,
+export encrypt_monoalphabetic, decrypt_monoalphabetic, crack_monoalphabetic, encrypt_atbash, decrypt_atbash,
        encrypt_caesar, decrypt_caesar, crack_caesar,
        encrypt_affine, decrypt_affine, crack_affine,
        encrypt_vigenere, decrypt_vigenere, crack_vigenere,
@@ -22,6 +23,7 @@ export encrypt_monoalphabetic, decrypt_monoalphabetic, crack_monoalphabetic,
        encrypt_hill, decrypt_hill,
        encrypt_playfair, decrypt_playfair,
        encrypt_enigma, decrypt_enigma,
-       string_fitness, index_of_coincidence
+       string_fitness, index_of_coincidence,
+       construct_railfence, encrypt_railfence, decrypt_railfence
 
 end # module

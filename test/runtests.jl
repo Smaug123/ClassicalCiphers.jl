@@ -1,4 +1,4 @@
-using ClassicalCiphers
+include(joinpath(dirname(@__DIR__), "src", "ClassicalCiphers.jl")); using .ClassicalCiphers
 using Test
 
 tests = [
@@ -11,6 +11,7 @@ tests = [
          "enigma",
          "hill",
          "solitaire",
+         "railfence",
         ]
 
 println("Running tests:")

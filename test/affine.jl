@@ -1,6 +1,3 @@
-using ClassicalCiphers
-using Test
-
 # docs examples
 
 @test encrypt_affine("Hello, World!", 3, 4) == "ZQLLU, SUDLN!"

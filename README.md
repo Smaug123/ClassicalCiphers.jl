@@ -1,12 +1,17 @@
-[![Build Status](https://travis-ci.org/Smaug123/ClassicalCiphers.jl.svg?branch=master)](https://travis-ci.org/Smaug123/ClassicalCiphers.jl)
+<h1 align="center">
+    ClassicalCiphers.jl
+</h1>
 
+<!-- [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://Smaug123.github.io/ClassicalCiphers.jl/stable) -->
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://Smaug123.github.io/ClassicalCiphers.jl/dev)
+[![CI](https://github.com/invenia/PkgTemplates.jl/workflows/CI/badge.svg)](https://github.com/Smaug123/ClassicalCiphers.jl/actions?query=workflow%3ACI)
 [![Coverage Status](https://coveralls.io/repos/Smaug123/ClassicalCiphers.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/Smaug123/ClassicalCiphers.jl?branch=master)
-
-# ClassicalCiphers
+[![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
 
 ## Main Features
 
-Provides access to encryption and decryption of strings according to a variety of classical algorithms.
+Provides access to encryption and decryption of strings according to a variety of classical algorithms.  Classical ciphers were created before computers, and thus work on letters rather than bits.
+
 The Solitaire cipher is included for completeness, though it is perhaps not strictly classical.
 
 ## Currently Implemented
@@ -20,6 +25,8 @@ The Solitaire cipher is included for completeness, though it is perhaps not stri
 * [Playfair]
 * [Enigma (M3 Army)][Enigma]
 * [Solitaire]
+* [Rail Fence]
+* [Atbash]
 
 ## Gotchas
 
@@ -185,7 +192,7 @@ are stripped out before use.
 Decrypt the same text:
 
 ```julia
-decrypt_portas("URYYB, JBEYQ!", "ab") 
+decrypt_portas("URYYB, JBEYQ!", "ab")
 # outputs "hello, world!"
 ```
 
@@ -360,6 +367,28 @@ decrypt_solitaire("EXKYI ZSGEH UNTIQ", collect(1:54))
 # outputs "aaaaaaaaaaaaaaa", as per https://www.schneier.com/code/sol-test.txt
 ```
 
+### Rail Fence cipher
+
+```julia
+julia> construct_railfence("WE ARE DISCOVERED. FLEE AT ONCE", 3)
+3×26 Array{Char,2}:
+ 'W'  '□'  '□'  '□'  'E'  '□'  '□'  '□'  'C'  '□'  '□'  '□'  'R'  …  '□'  '□'  'F'  '□'  '□'  '□'  'A'  '□'  '□'  '□'  'C'  '□'
+ '□'  'E'  '□'  'R'  '□'  'D'  '□'  'S'  '□'  'O'  '□'  'E'  '□'     '□'  '.'  '□'  'L'  '□'  'E'  '□'  'T'  '□'  'N'  '□'  'E'
+ '□'  '□'  'A'  '□'  '□'  '□'  'I'  '□'  '□'  '□'  'V'  '□'  '□'     'D'  '□'  '□'  '□'  'E'  '□'  '□'  '□'  'O'  '□'  '□'  '□'
+
+julia> encrypt_railfence("WE ARE DISCOVERED. FLEE AT ONCE", 3) # this reads the above matrix row by row
+"WECRFACERDSOEE.LETNEAIVDEO"
+
+julia> decrypt_railfence("WECRFACERDSOEE.LETNEAIVDEO", 3)
+"wearediscovered.fleeatonce"
+```
+
+### Atbash
+
+```julia
+encrypt_atbash("hello this is plaintext", "abcdefghijklmnopqrstuvwxyz") == encrypt_substitution("hello this is plaintext", "abcdefghijklmnopqrstuvwxyz", "zyxwvutsrqponmlkjihgfedcba")
+```
+
 [Caesar]: https://en.wikipedia.org/wiki/Caesar_cipher
 [Affine]: https://en.wikipedia.org/wiki/Affine_cipher
 [Vigenère]: https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher
@@ -369,3 +398,5 @@ decrypt_solitaire("EXKYI ZSGEH UNTIQ", collect(1:54))
 [Hill]: https://en.wikipedia.org/wiki/Hill_cipher
 [Playfair]: https://en.wikipedia.org/wiki/Playfair_cipher
 [Enigma]: https://en.wikipedia.org/wiki/Enigma_machine
+[Rail Fence]: https://en.wikipedia.org/wiki/Rail_fence_cipher
+[Atbash]: https://en.wikipedia.org/wiki/Atbash

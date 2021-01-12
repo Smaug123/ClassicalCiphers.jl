@@ -1,6 +1,3 @@
-using ClassicalCiphers
-using Test
-
 @test encrypt_solitaire("aaaaaaaaaaaaaaa", "") == "EXKYIZSGEHUNTIQ"
 @test encrypt_solitaire("aaaaaaaaaaaaaaa", "f") == "XYIUQBMHKKJBEGY"
 @test encrypt_solitaire("AAAAAAAAAAAAAAA", "fo") == "TUJYMBERLGXNDIW"

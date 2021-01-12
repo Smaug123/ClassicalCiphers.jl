@@ -1,6 +1,3 @@
-using ClassicalCiphers
-using Test
-
 # doc examples
 @test encrypt_vigenere("ab", [0, 1]) == "AC"
 @test decrypt_vigenere("ac", [0, 1]) == "ab"

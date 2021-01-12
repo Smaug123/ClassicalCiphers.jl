@@ -1,6 +1,3 @@
-using ClassicalCiphers
-using Test
-
 # Wikipedia examples
 
 @test encrypt_hill("help!", [3 3; 2 5]) == "HIAT"

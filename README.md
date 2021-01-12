@@ -2,9 +2,9 @@
     ClassicalCiphers.jl
 </h1>
 
-<!-- [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://username.github.io/MyCoolPackage.jl/stable) -->
-[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://username.github.io/MyCoolPackage.jl/dev)
-[![CI](https://github.com/invenia/PkgTemplates.jl/workflows/CI/badge.svg)](https://github.com/username/MyCoolPackage.jl/actions?query=workflow%3ACI)
+<!-- [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://Smaug123.github.io/ClassicalCiphers.jl/stable) -->
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://Smaug123.github.io/ClassicalCiphers.jl/dev)
+[![CI](https://github.com/invenia/PkgTemplates.jl/workflows/CI/badge.svg)](https://github.com/Smaug123/ClassicalCiphers.jl/actions?query=workflow%3ACI)
 [![Coverage Status](https://coveralls.io/repos/Smaug123/ClassicalCiphers.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/Smaug123/ClassicalCiphers.jl?branch=master)
 [![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
 

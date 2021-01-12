@@ -26,7 +26,22 @@ encrypt_substitution(plaintext, "zyxwvutsrqponmlkjihgfedcba") # this will create
 
 As per convention, the output will always be uppercase.
 
-For more information, see https://en.wikipedia.org/wiki/Substitution_cipher.
+For more information, see [`https://en.wikipedia.org/wiki/Substitution_cipher`](https://en.wikipedia.org/wiki/Substitution_cipher).
+
+---
+
+### Examples
+
+```julia
+julia> encrypt_substitution("Hello, this is plaintext", "abcdefghijklmnopqrstuvwxyz", "qwertyuiopasdfghjklzxcvbnm")
+"ITSSG, ZIOL OL HSQOFZTBZ"
+
+julia> encrypt_substitution("Hello, this is plaintext", "qwertyuiopasdfghjklzxcvbnm")
+"ITSSG, ZIOL OL HSQOFZTBZ"
+
+julia> encrypt_substitution("xyz", Dict('x' => 'd', 'y' => 'e', 'z' => 't'))
+"DET"
+```
 """
 encrypt_substitution(plaintext, sub_dict::Dict{T, S}) where {T, S} =
     uppercase(join(something_crypt_substitution(lowercase(plaintext), sub_dict)))
@@ -58,7 +73,22 @@ decrypt_substitution(ciphertext, "zyxwvutsrqponmlkjihgfedcba"; reverse_dict = tr
 
 As per convention, the output will always be lowercase.
 
-For more information, see https://en.wikipedia.org/wiki/Substitution_cipher.
+For more information, see [`https://en.wikipedia.org/wiki/Substitution_cipher`](https://en.wikipedia.org/wiki/Substitution_cipher).
+
+---
+
+### Examples
+
+```julia
+julia> decrypt_substitution("ITSSG, ZIOL OL HSQOFZTBZ", "abcdefghijklmnopqrstuvwxyz", "qwertyuiopasdfghjklzxcvbnm", reverse_dict = true)
+"hello, this is plaintext"
+
+julia> encrypt_atbash("some text", "abcdefghijklmnopqrstuvwxyz")
+"HLNV GVCG"
+
+julia> decrypt_atbash("HLNV GVCG", "abcdefghijklmnopqrstuvwxyz")
+"some text"
+```
 """
 function decrypt_substitution(ciphertext, sub_dict::Dict{T, S}; reverse_dict::Bool = true) where {T, S}
     sub_dict = reverse_dict ? reverse(sub_dict) : sub_dict

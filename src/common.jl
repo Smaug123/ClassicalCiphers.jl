@@ -3,7 +3,7 @@ function letters_only(text::AbstractString)
     return filter(x -> ('A' <= x <= 'Z' || 'a' <= x <= 'z'), text)
 end
 
-function rotate_right(arr::AbstractVector, n::T) where {T <: Integer}
+function rotate_right(arr::AbstractVector, n::Integer)
     # implementation of the Mathematica function rotate_right - or you could try circshift()?
     ans = copy(arr)
     for i in 1:length(arr)
@@ -13,7 +13,7 @@ function rotate_right(arr::AbstractVector, n::T) where {T <: Integer}
     return ans
 end
 
-function rotate_left(arr::AbstractVector, n::T) where {T <: Integer}
+function rotate_left(arr::AbstractVector, n::Integer)
     # implementation of the Mathematica function rotate_left
     ans = copy(arr)
     for i in 1:length(arr)
@@ -23,9 +23,9 @@ function rotate_left(arr::AbstractVector, n::T) where {T <: Integer}
     return ans
 end
 
-rotate_left_str(st::AbstractString, n::T) where {T <: Integer} =
+rotate_left_str(st::AbstractString, n::Integer) =
     join(rotate_left(collect(st), n))
-rotate_right_str(st::AbstractString, n::T) where {T <: Integer} =
+rotate_right_str(st::AbstractString, n::Integer) =
     join(rotate_right(collect(st), n))
 
 function split_by(arr::AbstractVector, func::Function)
@@ -85,8 +85,12 @@ function string_fitness(input::AbstractString; alreadystripped::Bool = false)
 end
 
 """
-Finds the frequencies of all characters in the input string, returning a Dict
-of 'a' => 4, for instance. Uppercase characters are considered distinct from lowercase.
+```julia
+frequencies(input::AbstractString)
+```
+
+Finds the frequencies of all characters in the input string, returning a `Dict`
+of `'a' => 4`, for instance. Uppercase characters are considered distinct from lowercase.
 """
 function frequencies(input::AbstractString)
     ans = Dict{Char, Int}()
@@ -102,6 +106,10 @@ function frequencies(input::AbstractString)
 end
 
 """
+```julia
+index_of_coincidence(input::AbstractString)
+```
+
 Finds the index of coincidence of the input string. Uppercase characters are considered to be
 equal to their lowercase counterparts.
 """

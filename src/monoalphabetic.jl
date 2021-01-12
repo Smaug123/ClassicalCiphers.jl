@@ -3,15 +3,31 @@ function keystr_to_dict(keystr::AbstractString)
 end
 
 """
+```julia
+encrypt_monoalphabetic(plaintext, key::Dict{Char, Char})
+```
+
 Encrypts the given plaintext according to the monoalphabetic substitution cipher.
-The key may be given as a Dict of replacements {'a' => 'b', 'c' => 'd'}, etc,
+The key may be given as a Dict of replacements `Dict('a' => 'b', 'c' => 'd')`, etc,
 or as a 26-length string "keystringbcdfhjlmopqruvwxz", which is shorthand for
-{'a' => 'k', 'e' => 'b', …}
+`Dict('a' => 'k', 'e' => 'b', ...)`
 
 If the key is given as a string, it is assumed that each character occurs only
 once, and the string is converted to lowercase.
 If the key is given as a Dict, the only substitutions made are those in the Dict;
 in particular, the string is not converted to lowercase automatically.
+
+---
+
+### Examples
+
+```julia
+julia> encrypt_monoalphabetic("Hello, World!", "DEFGHIJKLMNOPQRSTUVWXYZABC")
+"KHOOR, ZRUOG!"
+
+julia> encrypt_monoalphabetic("aBcbDd", Dict{Char, Char}('a' => '5', 'B' => '@', 'b' => 'o'))
+"5@coDd"
+```
 """
 function encrypt_monoalphabetic(plaintext, key::Dict{Char, Char})
     # plaintext: string; key: dictionary of {'a' => 'b'}, etc, for replacing 'a' with 'b'
@@ -19,21 +35,34 @@ function encrypt_monoalphabetic(plaintext, key::Dict{Char, Char})
 end
 
 """
+```julia
+decrypt_monoalphabetic(ciphertext, key::Dict{Char, Char})
+```
+
 Decrypts the given ciphertext according to the monoalphabetic substitution cipher.
-The key may be given as a Dict of replacements {'a' => 'b', 'c' => 'd'}, etc,
+The key may be given as a Dict of replacements `Dict('a' => 'b', 'c' => 'd')`, etc,
 or as a 26-length string "keystringbcdfhjlmopqruvwxz", which is shorthand for
-{'a' => 'k', 'e' => 'b', …}
+`Dict('a' => 'k', 'e' => 'b', ...)`
 
 If the key is given as a string, it is assumed that each character occurs only
 once, and the string is converted to lowercase.
 If the key is given as a Dict, the only substitutions made are those in the Dict;
 in particular, the string is not converted to lowercase automatically.
+
+---
+
+### Examples
+
+```julia
+julia> decrypt_monoalphabetic("Khoor, Zruog!", "DEFGHIJKLMNOPQRSTUVWXYZABC")
+"hello, world!"
+```
 """
 function decrypt_monoalphabetic(ciphertext, key::Dict{Char, Char})
     # ciphertext: string; key: dictionary of {'a' => 'b'}, etc, where the plaintext 'a' was
     # replaced by ciphertext 'b'. No character should appear more than once
     # as a value in {key}.
-    return encrypt_monoalphabetic(ciphertext, Dict{Char, Char}([reverse(a) for a in key]))
+    return encrypt_monoalphabetic(ciphertext, Dict{Char, Char}(reverse(a) for a in key))
 end
 
 function encrypt_monoalphabetic(plaintext, key::AbstractString)
@@ -47,7 +76,7 @@ function decrypt_monoalphabetic(ciphertext, key::AbstractString)
     # working in lowercase; key is assumed only to have each element appearing once
     # and to be in lowercase
     # so decrypt_monoalphabetic("cb", "cbade…") is "ab"
-    dict = Dict{Char, Char}(a => Char(96 + findfirst(i -> i == a, lowercase(key))) for a in lowercase(key))
+    dict = Dict{Char, Char}(a => Char(96 + findfirst(==(a), lowercase(key))) for a in lowercase(key))
     return encrypt_monoalphabetic(lowercase(ciphertext), dict)
 end
 
@@ -56,6 +85,10 @@ end
 # The method we use for cracking is simulated annealing.
 
 """
+```julia
+swap_two(str)
+```
+
 swap_two(string) swaps two of the characters of the input string, at random.
 The characters are guaranteed to be at different positions, though "aa" would be
 'swapped' to "aa".
@@ -70,34 +103,55 @@ function swap_two(str)
 end
 
 """
+```julia
+crack_monoalphabetic(
+    ciphertext;
+    starting_key::AbstractString = "",
+    min_temp::AbstractFloat = 0.0001,
+    temp_factor::AbstractFloat = 0.97,
+    acceptance_prob::AbstractFloat = ((e,ep,t) -> ep > e ? 1. : exp(-(e-ep)/t)),
+    chatty::Integer = 0,
+    rounds::Integer = 1
+)
+```
+
 crack_monoalphabetic cracks the given ciphertext which was encrypted by the monoalphabetic
 substitution cipher.
 
-Returns (the derived key, decrypted plaintext).
+Returns `(the derived key, decrypted plaintext)`.
 
-Possible arguments include:
-starting_key="", which when specified (for example, as "ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
-starts the simulation at the given key. The default causes it to start with the most
-common characters being decrypted to the most common English characters.
-min_temp=0.0001, which is the temperature at which we stop the simulation.
-temp_factor=0.97, which is the factor by which the temperature decreases each step.
-chatty=0, which can be set to 1 to print whenever the key is updated, or 2 to print
-whenever any new key is considered.
-rounds=1, which sets the number of repetitions we perform. Each round starts with the
-best key we've found so far.
-acceptance_prob=((e, ep, t) -> ep>e ? 1 : exp(-(e-ep)/t)), which is the probability
-with which we accept new key of fitness ep, given that the current key has fitness e,
-at temperature t.
+The various optional arguments to `crack_monoalphabetic` are:
+* `starting_key=""`, which when specified (for example, as "ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+  starts the simulation at the given key. The default causes it to start with the most
+  common characters being decrypted to the most common English characters.
+* `min_temp=0.0001`, which is the temperature at which we stop the simulation.
+* `temp_factor=0.97`, which is the factor by which the temperature decreases each step.
+* `chatty=0`, which can be set to 1 to print whenever the key is updated, or 2 to print
+  whenever any new key is considered.
+* `rounds=1`, which sets the number of repetitions we perform. Each round starts with the
+  best key we've found so far.
+* `acceptance_prob=((e, ep, t) -> ep>e ? 1 : exp(-(e-ep)/t))`, which is the probability
+  with which we accept new key of fitness ep, given that the current key has fitness e,
+  at temperature t.
+
+---
+
+### Examples
+
+```julia
+julia> crack_monoalphabetic(str, chatty=0, rounds=10)
+(decrypted_string, key)
+```
 """
 function crack_monoalphabetic(
     ciphertext;
     starting_key::AbstractString = "",
-    min_temp::F = 0.0001,
-    temp_factor::F = 0.97,
-    acceptance_prob::F = ((e,ep,t) -> ep > e ? 1. : exp(-(e-ep)/t)),
-    chatty::T = 0,
-    rounds::T = 1
-) where {T <: Integer, F <: AbstractFloat}
+    min_temp::AbstractFloat = 0.0001,
+    temp_factor::AbstractFloat = 0.97,
+    acceptance_prob::AbstractFloat = ((e,ep,t) -> ep > e ? 1. : exp(-(e-ep)/t)),
+    chatty::Integer = 0,
+    rounds::Integer = 1
+)
 
     if isempty(starting_key)
         # most common letters

@@ -87,10 +87,23 @@ function SolitaireKeyStream(initialDeck::AbstractVector{T}) where {T <: Integer}
 end
 
 """
+```julia
+encrypt_solitaire(string::AbstractString, initialDeck::AbstractVector{T}) where {T <: Integer}
+```
+
 Encrypts the given plaintext according to the Solitaire cipher.
 The key may be given either as a vector initial deck, where the cards are
 1 through 54 (the two jokers being 53, 54), or as a string.
 Schneier's keying algorithm is used to key the deck if the key is a string.
+
+---
+
+### Examples
+
+```julia
+julia> encrypt_solitaire("Hello, World!", "crypto")
+"GRNNQISRYA"
+```
 """
 function encrypt_solitaire(string::AbstractString, initialDeck::AbstractVector{T}) where {T <: Integer}
     inp = uppercase(letters_only(string))
@@ -103,10 +116,23 @@ function encrypt_solitaire(string::AbstractString, initialDeck::AbstractVector{T
 end
 
 """
+```julia
+decrypt_solitaire(string::AbstractString, initialDeck::AbstractVector{T}) where {T <: Integer}
+```
+
 Decrypts the given ciphertext according to the Solitaire cipher.
 The key may be given either as a vector initial deck, where the cards are
 1 through 54 (the two jokers being 53, 54), or as a string.
 Schneier's keying algorithm is used to key the deck if the key is a string.
+
+---
+
+### Examples
+
+```julia
+julia> decrypt_solitaire("EXKYI ZSGEH UNTIQ", collect(1:54)) # as per https://www.schneier.com/code/sol-test.txt
+"aaaaaaaaaaaaaaa"
+```
 """
 function decrypt_solitaire(string::AbstractString, initialDeck::AbstractVector{T}) where {T <: Integer}
     inp = uppercase(letters_only(string))

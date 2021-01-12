@@ -1,10 +1,17 @@
-[![Build Status](https://travis-ci.org/Smaug123/ClassicalCiphers.jl.svg?branch=master)](https://travis-ci.org/Smaug123/ClassicalCiphers.jl) [![Coverage Status](https://coveralls.io/repos/Smaug123/ClassicalCiphers.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/Smaug123/ClassicalCiphers.jl?branch=master) [![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
+<h1 align="center">
+    ClassicalCiphers.jl
+</h1>
 
-# ClassicalCiphers
+<!-- [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://username.github.io/MyCoolPackage.jl/stable) -->
+[![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://username.github.io/MyCoolPackage.jl/dev)
+[![CI](https://github.com/invenia/PkgTemplates.jl/workflows/CI/badge.svg)](https://github.com/username/MyCoolPackage.jl/actions?query=workflow%3ACI)
+[![Coverage Status](https://coveralls.io/repos/Smaug123/ClassicalCiphers.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/Smaug123/ClassicalCiphers.jl?branch=master)
+[![Code Style: Blue](https://img.shields.io/badge/code%20style-blue-4495d1.svg)](https://github.com/invenia/BlueStyle)
 
 ## Main Features
 
-Provides access to encryption and decryption of strings according to a variety of classical algorithms.
+Provides access to encryption and decryption of strings according to a variety of classical algorithms.  Classical ciphers were created before computers, and thus work on letters rather than bits.
+
 The Solitaire cipher is included for completeness, though it is perhaps not strictly classical.
 
 ## Currently Implemented
@@ -20,6 +27,7 @@ The Solitaire cipher is included for completeness, though it is perhaps not stri
 * [Solitaire]
 * [Rail Fence]
 * [Substitution]
+* [Atbash]
 
 ## Gotchas
 
@@ -398,6 +406,12 @@ julia> decrypt_atbash("HLNV GVCG", "abcdefghijklmnopqrstuvwxyz")
 "some text"
 ```
 
+### Atbash
+
+```julia
+encrypt_atbash("hello this is plaintext", "abcdefghijklmnopqrstuvwxyz") == encrypt_substitution("hello this is plaintext", "abcdefghijklmnopqrstuvwxyz", "zyxwvutsrqponmlkjihgfedcba")
+```
+
 [Caesar]: https://en.wikipedia.org/wiki/Caesar_cipher
 [Affine]: https://en.wikipedia.org/wiki/Affine_cipher
 [Vigenère]: https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher
@@ -409,3 +423,4 @@ julia> decrypt_atbash("HLNV GVCG", "abcdefghijklmnopqrstuvwxyz")
 [Enigma]: https://en.wikipedia.org/wiki/Enigma_machine
 [Rail Fence]: https://en.wikipedia.org/wiki/Rail_fence_cipher
 [Substitution]: https://en.wikipedia.org/wiki/Substitution_cipher
+[Atbash]: https://en.wikipedia.org/wiki/Atbash

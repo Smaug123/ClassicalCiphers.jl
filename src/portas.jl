@@ -1,9 +1,22 @@
 """
+```julia
+encrypt_portas(plaintext, key_in::AbstractString)
+```
+
 Encrypts the given plaintext with the Portas cipher.
 
 The key must be given as a string, whose characters are letters.
 
 Converts the text to uppercase.
+
+---
+
+### Examples
+
+```julia
+julia> encrypt_portas("Hello, World!", "ab")
+"URYYB, JBEYQ!"
+```
 """
 function encrypt_portas(plaintext, key_in::AbstractString)
 	key = uppercase(letters_only(key_in))
@@ -36,11 +49,24 @@ function encrypt_portas(plaintext, key_in::AbstractString)
 end
 
 """
+```julia
+decrypt_portas(ciphertext, key::AbstractString)
+```
+
 Decrypts the given ciphertext with the Portas cipher.
 
 The key must be given as a string, whose characters are letters.
 
 Converts the text to lowercase.
+
+---
+
+### Examples
+
+```julia
+julia> decrypt_portas("URYYB, JBEYQ!", "ab")
+"hello, world!"
+```
 """
 function decrypt_portas(ciphertext, key::AbstractString)
 	return lowercase(encrypt_portas(ciphertext, key))

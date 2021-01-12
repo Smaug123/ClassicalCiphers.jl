@@ -1,8 +1,12 @@
 using LinearAlgebra
 
 """
+```julia
+encrypt_hill(plaintext::AbstractString, key::AbstractArray{Integer, 2})
+```
+
 Encrypts the given plaintext according to the Hill cipher.
-The key may be given as a matrix (that is, two-dimensional Array{Int}) or as a string.
+The key may be given as a matrix (that is, two-dimensional `Array{Int}`) or as a string.
 
 If the key is given as a string, the string is converted to uppercase before use, and
 symbols are removed. It is assumed to be of square integer length, and the matrix entries
@@ -11,6 +15,21 @@ to bottom-left to bottom-right. If the string is not of square integer length, a
 is thrown.
 
 The matrix must be invertible modulo 26. If it is not, an error is thrown.
+
+---
+
+### Examples
+
+```julia
+julia> encrypt_hill("Hello, World!", [1 2; 5 7]) # Encrypt the text "Hello, World!" with a Hill key of matrix `[1 2; 5 7]`
+"PHHRGUWQRV"
+
+julia> encrypt_hill("Hello, World!", "bcfh")
+"PLHCGQWHRY"
+
+julia> encrypt_hill("Hello", "bcfh") # If the plaintext-length is not a multiple of the dimension of the key matrix, it is padded with X
+"PLHCIX"
+```
 """
 function encrypt_hill(plaintext::AbstractString, key::AbstractArray{T, 2}) where {T <: Integer}
 	if round(Integer, det(key)) % 26 == 0
@@ -60,6 +79,10 @@ function minor(mat::AbstractArray{T, 2}, i::K, j::K) where {T <: Integer, K <: I
 end
 
 """
+```julia
+adjugate(mat::AbstractArray{Integer, 2})
+```
+
 Computes the adjugate matrix for given matrix.
 """
 function adjugate(mat::AbstractArray{T, 2}) where {T <: Integer}
@@ -68,7 +91,27 @@ function adjugate(mat::AbstractArray{T, 2}) where {T <: Integer}
 	return Array{Integer, 2}(transpose(ans))
 end
 
-function decrypt_hill(ciphertext, key::AbstractArray{T, 2}) where {T<:Integer}
+"""
+```julia
+decrypt_hill(ciphertext, key::AbstractArray{T, 2}) where {T <: Integer}
+```
+
+---
+
+### Examples
+
+```julia
+julia> decrypt_hill("PLHCGQWHRY", [1 2; 5 7]) # Decrypt the text "PLHCGQWHRY" with key of `[1 2; 5 7]`
+"helloworld"
+
+julia> decrypt_hill("PLHCGQWHRY", "bcfh")
+"helloworld"
+
+julia> decrypt_hill("PLHCIX", "bcfh") # If the plaintext-length is not a multiple of the dimension of the key matrix, it is padded with X
+"hellox"
+```
+"""
+function decrypt_hill(ciphertext, key::AbstractArray{T, 2}) where {T <: Integer}
 	if ndims(key) != 2
 		error("Key must be a two-dimensional matrix.")
 	end

@@ -1,4 +1,8 @@
 """
+```julia
+encrypt_affine(plaintext, mult::Integer, add::Integer; offset::Integer = 0)
+```
+
 Encrypts the given plaintext according to the Affine cipher.
 The key is given as a pair of integers: first the multiplier, then
 the additive constant.
@@ -7,10 +11,19 @@ The multiplier must be coprime to 26. If it is not, an error is thrown.
 
 Converts the input to uppercase, but retains symbols.
 
-Optional argument: offset=0, which specifies what number 'a' should be
+Optional argument: `offset=0`, which specifies what number 'a' should be
 considered as.
+
+---
+
+### Examples
+
+```julia
+julia> encrypt_affine("Hello, World!", 3, 4)
+"ZQLLU, SUDLN!"
+```
 """
-function encrypt_affine(plaintext, mult::T, add::T; offset::T = 0) where {T <: Integer}
+function encrypt_affine(plaintext, mult::Integer, add::Integer; offset::Integer = 0)
 	if mult % 2 == 0 || mult % 13 == 0
 		error("Multiplier must be coprime to 26.")
 	end
@@ -20,6 +33,10 @@ function encrypt_affine(plaintext, mult::T, add::T; offset::T = 0) where {T <: I
 end
 
 """
+```julia
+decrypt_affine(ciphertext, mult::Integer, add::Integer; offset::Integer=0)
+```
+
 Decrypts the given ciphertext according to the Affine cipher.
 The key is given as a pair of integers: first the multiplier, then
 the additive constant.
@@ -28,10 +45,19 @@ The multiplier must be coprime to 26. If it is not, an error is thrown.
 
 Converts the input to lowercase, but retains symbols.
 
-Optional argument: offset=0, which specifies what number 'a' should be
+Optional argument: `offset=0`, which specifies what number 'a' should be
 considered as.
+
+---
+
+### Examples
+
+```julia
+julia> decrypt_affine("ZQLLU, SUDLN!", 3, 4)
+"hello, world!"
+```
 """
-function decrypt_affine(ciphertext, mult::T, add::T; offset=0) where {T <: Integer}
+function decrypt_affine(ciphertext, mult::Integer, add::Integer; offset::Integer = 0)
 	if mult % 2 == 0 || mult % 13 == 0
 		error("Multiplier must be coprime to 26.")
 	end
@@ -61,15 +87,28 @@ function max_by(arr::AbstractArray, f::Function)
 end
 
 """
+```julia
+crack_affine(ciphertext; mult::Integer = 0, add::Integer = -1)
+```
+
 Cracks the given ciphertext according to the Affine cipher.
-Returns ((multiplier, additive constant), decrypted string).
+Returns `((multiplier, additive constant), decrypted string)`.
 
 Converts the input to lowercase, but retains symbols.
 
-Optional arguments: mult=0, which specifies the multiplier if known;
-add=-1, which specifies the additive constant if known.
+Optional arguments: `mult=0`, which specifies the multiplier if known;
+`add=-1`, which specifies the additive constant if known.
+
+---
+
+### Examples
+
+```julia
+julia> crack_affine("ZQLLU, SUDLN!")
+("hello, world!", (3, 4))
+```
 """
-function crack_affine(ciphertext; mult::T = 0, add::T = -1) where {T <: Integer}
+function crack_affine(ciphertext; mult::Integer = 0, add::Integer = -1)
 	mults = mult != 0 ? Int[mult] : Int[i for i in filter(x -> (x % 2 != 0 && x % 13 != 0), 1:25)]
 	adds = add != -1 ? Int[add] : (0:25)
 	possible_keys = Iterators.product(mults, adds)

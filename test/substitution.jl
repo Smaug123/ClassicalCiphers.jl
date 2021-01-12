@@ -13,12 +13,12 @@ using Test
 @test decrypt_substitution("hello this is ciphertext", "abcdefghijklmnopqrstuvwxyz", "abcdefghijklmnopqrstuvwxyz") == "hello this is ciphertext"
 @test decrypt_substitution("hello this is ciphertext", "abcdefghijklmnopqrstuvwxyz") == "hello this is ciphertext"
 @test decrypt_substitution("hello this is ciphertext", "abcdefghijklmnopqrstuvwxyz"; reverse_dict = true) == "hello this is ciphertext"
-@test decrypt_substitution("hello this is ciphertext", "qwertyuiopasdfghjklzxcvbnm", "abcdefghijklmnopqrstuvwxyz") == "pcssi ephl hl vhjpcdecue"
-@test decrypt_substitution("hello this is ciphertext", "qwertyuiopasdfghjklzxcvbnm", "abcdefghijklmnopqrstuvwxyz"; reverse_dict = false) == "itssg ziol ol eohitkztbz"
-@test decrypt_substitution("ITSSG ZIOL OL HSQOFZTBZ", "abcdefghijklmnopqrstuvwxyz", "qwertyuiopasdfghjklzxcvbnm"; reverse_dict = true) == "ozllu mogs gs iljgymzwm"
-@test decrypt_substitution("ITSSG ZIOL OL HSQOFZTBZ", "abcdefghijklmnopqrstuvwxyz", "qwertyuiopasdfghjklzxcvbnm"; reverse_dict = false) == "hello this is plaintext"
-@test decrypt_substitution("PCSSI EPHL HL JSKHYECUE", "qwertyuiopasdfghjklzxcvbnm", "abcdefghijklmnopqrstuvwxyz"; reverse_dict = true) == "jvllh cjps ps qlrpfcvgc"
-@test decrypt_substitution("PCSSI EPHL HL JSKHYECUE", "qwertyuiopasdfghjklzxcvbnm", "abcdefghijklmnopqrstuvwxyz"; reverse_dict = false) == "hello this is plaintext"
+@test decrypt_substitution("hello this is ciphertext", "qwertyuiopasdfghjklzxcvbnm", "abcdefghijklmnopqrstuvwxyz") == "itssg ziol ol eohitkztbz"
+@test decrypt_substitution("hello this is ciphertext", "qwertyuiopasdfghjklzxcvbnm", "abcdefghijklmnopqrstuvwxyz"; reverse_dict = false) == "pcssi ephl hl vhjpcdecue"
+@test decrypt_substitution("ITSSG ZIOL OL HSQOFZTBZ", "abcdefghijklmnopqrstuvwxyz", "qwertyuiopasdfghjklzxcvbnm"; reverse_dict = false) == "ozllu mogs gs iljgymzwm"
+@test decrypt_substitution("ITSSG ZIOL OL HSQOFZTBZ", "abcdefghijklmnopqrstuvwxyz", "qwertyuiopasdfghjklzxcvbnm"; reverse_dict = true) == "hello this is plaintext"
+@test decrypt_substitution("PCSSI EPHL HL JSKHYECUE", "qwertyuiopasdfghjklzxcvbnm", "abcdefghijklmnopqrstuvwxyz"; reverse_dict = false) == "jvllh cjps ps qlrpfcvgc"
+@test decrypt_substitution("PCSSI EPHL HL JSKHYECUE", "qwertyuiopasdfghjklzxcvbnm", "abcdefghijklmnopqrstuvwxyz"; reverse_dict = true) == "hello this is plaintext"
 @test decrypt_substitution("ITSSG ZIOL OL HSQOFZTBZ", "abcdefghijklmnopqrstuvwxyz", "qwertyuiopasdfghjklzxcvbnm"; reverse_dict = false) != decrypt_substitution("ITSSG ZIOL OL HSQOFZTBZ", "abcdefghijklmnopqrstuvwxyz", "qwertyuiopasdfghjklzxcvbnm"; reverse_dict = true)
 
 

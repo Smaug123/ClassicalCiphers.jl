@@ -15,7 +15,6 @@ Currently implemented ciphers:
   - [Enigma (M3 Army)](https://en.wikipedia.org/wiki/Enigma_machine)
   - [Solitaire](https://en.wikipedia.org/wiki/Solitaire_(cipher))
   - [Rail Fence](https://en.wikipedia.org/wiki/Rail_fence_cipher)
-  - [Substitution](https://en.wikipedia.org/wiki/Substitution_cipher)
   - [Atbash](https://en.wikipedia.org/wiki/Atbash)
 
 

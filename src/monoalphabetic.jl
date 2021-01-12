@@ -1,21 +1,45 @@
-function keystr_to_dict(keystr::AbstractString)
-    return Dict{Char, Char}(map(x -> (Char(x[1] + 64), x[2]), enumerate(uppercase(keystr))))
-end
+#=
+julia> @btime encrypt_monoalphabetic("THIS CODE WAS INVENTED BY JULIUS CAESAR", "DEFGHIJKLMNOPQRSTUVWXYZABC")
+  2.746 μs (21 allocations: 2.31 KiB)
+"WKLV FRGH ZDV LQYHQWHG EB MXOLXV FDHVDU"
 
-"""
+julia> @btime decrypt_monoalphabetic("WKLV FRGH ZDV LQYHQWHG EB MXOLXV FDHVDU", "DEFGHIJKLMNOPQRSTUVWXYZABC")
+  3.817 μs (31 allocations: 3.81 KiB)
+"this code was invented by julius caesar"
+=#
+
+_keystr_to_dict(keystr::AbstractString) =
+    Dict{Char, Char}(Char(i + 64) => c for (i, c) in enumerate(uppercase(keystr)))
+_keystr_to_dict(A::AbstractString, B::AbstractString) =
+    Dict{eltype(A), eltype(B)}(a => b for (a, b) in zip(uppercase(A), uppercase(B))) # policy decision: all dictionaries are uppercase
+Base.reverse(D::Dict{T, S}) where {T, S} =
+    Dict{S, T}(reverse(p) for p in D)
+_monoalphabetic_substitution(text, sub_dict::Dict{T, S}) where {T, S} =
+    S[get(sub_dict, c, c) for c in text]
+
+# if using sub_dict directly, do not convert case
+@doc raw"""
+Arguably the most simple of the classical ciphers, the substitution cipher works by creating an arbitrary substitution dictionary; e.g.,
 ```julia
-encrypt_monoalphabetic(plaintext, key::Dict{Char, Char})
+'a' => 'x'
+'b' => 'g'
+'c' => 'l'
+...
+```
+This dictionary then replaces every corresponding letter in the plaintext input with a different letter (as specified by the dictionary input.)
+
+The function `encrypt_substitution` will either take this dictionary as its second parameter, _or_ it can construct the dictionary itself:
+```julia
+encrypt_substitution(plaintext, Dict(...))
+encrypt_substitution(plaintext, "abcdefghijklmnopqrstuvwxyz", "zyxwvutsrqponmlkjihgfedcba") # this will create the dictionary 'a' => 'z', 'b' => 'y', ..., 'z' => 'a'
+encrypt_substitution(plaintext, "zyxwvutsrqponmlkjihgfedcba") # this will create the dictionary 'a' => 'z', 'b' => 'y', ..., 'z' => 'a' by assuming the keys in the substitution dictionary
 ```
 
-Encrypts the given plaintext according to the monoalphabetic substitution cipher.
-The key may be given as a Dict of replacements `Dict('a' => 'b', 'c' => 'd')`, etc,
-or as a 26-length string "keystringbcdfhjlmopqruvwxz", which is shorthand for
-`Dict('a' => 'k', 'e' => 'b', ...)`
+*All characters undefined in the dictionary are preserved by default; this includes punctionation, spaces, and cases.*  This means that, when using a dictionary, strings are not automatically converted into uppercase.
 
-If the key is given as a string, it is assumed that each character occurs only
-once, and the string is converted to lowercase.
-If the key is given as a Dict, the only substitutions made are those in the Dict;
-in particular, the string is not converted to lowercase automatically.
+As per convention, the output will always be uppercase.
+
+For more information, see [`https://en.wikipedia.org/wiki/Substitution_cipher`](https://en.wikipedia.org/wiki/Substitution_cipher).
 
 ---
 
@@ -27,58 +51,70 @@ julia> encrypt_monoalphabetic("Hello, World!", "DEFGHIJKLMNOPQRSTUVWXYZABC")
 
 julia> encrypt_monoalphabetic("aBcbDd", Dict{Char, Char}('a' => '5', 'B' => '@', 'b' => 'o'))
 "5@coDd"
+
+julia> encrypt_monoalphabetic("Hello, this is plaintext", "abcdefghijklmnopqrstuvwxyz", "qwertyuiopasdfghjklzxcvbnm")
+"ITSSG, ZIOL OL HSQOFZTBZ"
+
+julia> encrypt_monoalphabetic("Hello, this is plaintext", "qwertyuiopasdfghjklzxcvbnm")
+"ITSSG, ZIOL OL HSQOFZTBZ"
+
+julia> encrypt_monoalphabetic("xyz", Dict('x' => 'd', 'y' => 'e', 'z' => 't'))
+"det"
 ```
 """
-function encrypt_monoalphabetic(plaintext, key::Dict{Char, Char})
-    # plaintext: string; key: dictionary of {'a' => 'b'}, etc, for replacing 'a' with 'b'
-    return join(eltype(keys(key))[get(key, i, i) for i in plaintext])
-end
+encrypt_monoalphabetic(plaintext, sub_dict::Dict{T, S}) where {T, S} =
+    join(_monoalphabetic_substitution(plaintext, sub_dict))
+encrypt_monoalphabetic(plaintext, A, B::AbstractString) =
+    encrypt_monoalphabetic(uppercase(plaintext), _keystr_to_dict(A, B))
+# Fall back on using english alphabet as keys
+encrypt_monoalphabetic(plaintext, B::AbstractString) =
+    encrypt_monoalphabetic(uppercase(plaintext), _keystr_to_dict(B))
 
-"""
+@doc raw"""
+Arguably the most simple of the classical ciphers, the substitution cipher works by creating an arbitrary substitution dictionary; e.g.,
 ```julia
-decrypt_monoalphabetic(ciphertext, key::Dict{Char, Char})
+'a' => 'x'
+'b' => 'g'
+'c' => 'l'
+...
+```
+This dictionary then replaces every corresponding letter in the plaintext input with a different letter (as specified by the dictionary input.)
+
+The function `decrypt_substitution` will either take this dictionary as its second parameter, _or_ it can construct the dictionary itself:
+```julia
+decrypt_substitution(ciphertext, Dict(...); reverse_dict = true)
+decrypt_substitution(ciphertext, "abcdefghijklmnopqrstuvwxyz", "zyxwvutsrqponmlkjihgfedcba"; reverse_dict = true) # this will create the dictionary 'a' => 'z', 'b' => 'y', ..., 'z' => 'a'
+decrypt_substitution(ciphertext, "zyxwvutsrqponmlkjihgfedcba"; reverse_dict = true) # this will create the dictionary 'a' => 'z', 'b' => 'y', ..., 'z' => 'a' by assuming the keys in the substitution dictionary
 ```
 
-Decrypts the given ciphertext according to the monoalphabetic substitution cipher.
-The key may be given as a Dict of replacements `Dict('a' => 'b', 'c' => 'd')`, etc,
-or as a 26-length string "keystringbcdfhjlmopqruvwxz", which is shorthand for
-`Dict('a' => 'k', 'e' => 'b', ...)`
+*All characters undefined in the dictionary are preserved by default; this includes punctionation, spaces, and cases.*  This means that, when using a dictionary, strings are not automatically converted into lowercase.
 
-If the key is given as a string, it is assumed that each character occurs only
-once, and the string is converted to lowercase.
-If the key is given as a Dict, the only substitutions made are those in the Dict;
-in particular, the string is not converted to lowercase automatically.
+*If `reverse_dict` is set to true (as it is by default), the input dictionary is assumed to be the same used to _en_crypt, meaning it is reversed in order to _decrypt_ the ciphertext.*
+
+As per convention, the output will always be lowercase.
+
+For more information, see [`https://en.wikipedia.org/wiki/Substitution_cipher`](https://en.wikipedia.org/wiki/Substitution_cipher).
 
 ---
 
 ### Examples
 
 ```julia
+julia> decrypt_monoalphabetic("ITSSG, ZIOL OL HSQOFZTBZ", "abcdefghijklmnopqrstuvwxyz", "qwertyuiopasdfghjklzxcvbnm", reverse_dict = true)
+"hello, this is plaintext"
+
 julia> decrypt_monoalphabetic("Khoor, Zruog!", "DEFGHIJKLMNOPQRSTUVWXYZABC")
 "hello, world!"
 ```
 """
-function decrypt_monoalphabetic(ciphertext, key::Dict{Char, Char})
-    # ciphertext: string; key: dictionary of {'a' => 'b'}, etc, where the plaintext 'a' was
-    # replaced by ciphertext 'b'. No character should appear more than once
-    # as a value in {key}.
-    return encrypt_monoalphabetic(ciphertext, Dict{Char, Char}(reverse(a) for a in key))
+function decrypt_monoalphabetic(ciphertext, sub_dict::Dict{T, S}; reverse_dict::Bool = true) where {T, S}
+    sub_dict = reverse_dict ? reverse(sub_dict) : sub_dict
+    return join(_monoalphabetic_substitution(ciphertext, sub_dict))
 end
-
-function encrypt_monoalphabetic(plaintext, key::AbstractString)
-    # plaintext: string; key: string of length 26, first character is the image of 'a', etc
-    # working in lowercase; key is assumed only to have each element appearing once
-    return encrypt_monoalphabetic(uppercase(plaintext), keystr_to_dict(key))
-end
-
-function decrypt_monoalphabetic(ciphertext, key::AbstractString)
-    # ciphertext: string; key: string of length 26, first character is the image of 'a', etc
-    # working in lowercase; key is assumed only to have each element appearing once
-    # and to be in lowercase
-    # so decrypt_monoalphabetic("cb", "cbade…") is "ab"
-    dict = Dict{Char, Char}(a => Char(96 + findfirst(==(a), lowercase(key))) for a in lowercase(key))
-    return encrypt_monoalphabetic(lowercase(ciphertext), dict)
-end
+decrypt_monoalphabetic(ciphertext, A, B; reverse_dict::Bool = true) =
+    lowercase(decrypt_monoalphabetic(uppercase(ciphertext), _keystr_to_dict(A, B); reverse_dict = reverse_dict))
+decrypt_monoalphabetic(ciphertext, B; reverse_dict::Bool = true) =
+    lowercase(decrypt_monoalphabetic(uppercase(ciphertext), _keystr_to_dict(B); reverse_dict = reverse_dict))
 
 # Cracking
 
@@ -231,3 +267,50 @@ function crack_monoalphabetic(
         
         return decrypt_monoalphabetic(ciphertext, key), key
 end
+
+"""
+```julia
+encrypt_atbash(plaintext, alphabet)
+```
+
+A special case of the substitution cipher, the Atbash cipher substitutes a given alphabet with its reverse:
+```julia
+encrypt_atbash(plaintext, "abcdefghijklmnopqrstuvwxyz") == encrypt_substitution(plaintext, "abcdefghijklmnopqrstuvwxyz", "zyxwvutsrqponmlkjihgfedcba")
+```
+
+*Omitting the alphabet, it will assume you are using the English alphabet.*
+"""
+encrypt_atbash(plaintext, alphabet) =
+    encrypt_substitution(plaintext, alphabet, reverse(alphabet))
+encrypt_atbash(plaintext) =
+    encrypt_atbash(plaintext, "abcdefghijklmnopqrstuvwxyz")
+
+"""
+```julia
+decrypt_atbash(ciphertext, alphabet)
+```
+
+A special case of the substitution cipher, the Atbash cipher substitutes a given alphabet with its reverse:
+```julia
+decrypt_atbash(ciphertext, "abcdefghijklmnopqrstuvwxyz") == decrypt_substitution(ciphertext, "zyxwvutsrqponmlkjihgfedcba", "abcdefghijklmnopqrstuvwxyz")
+decrypt_atbash(ciphertext, "abcdefghijklmnopqrstuvwxyz") == decrypt_substitution(ciphertext, "zyxwvutsrqponmlkjihgfedcba"; reverse_dict = true)
+```
+
+*Omitting the alphabet, it will assume you are using the English alphabet.*
+
+---
+
+### Examples
+
+```julia
+julia> encrypt_atbash("some text", "abcdefghijklmnopqrstuvwxyz")
+"HLNV GVCG"
+
+julia> decrypt_atbash("HLNV GVCG", "abcdefghijklmnopqrstuvwxyz")
+"some text"
+```
+"""
+decrypt_atbash(ciphertext, alphabet) =
+    decrypt_substitution(ciphertext, reverse(alphabet), alphabet)
+decrypt_atbash(ciphertext) =
+    decrypt_atbash(ciphertext, "abcdefghijklmnopqrstuvwxyz")

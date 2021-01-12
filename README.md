@@ -26,7 +26,6 @@ The Solitaire cipher is included for completeness, though it is perhaps not stri
 * [Enigma (M3 Army)][Enigma]
 * [Solitaire]
 * [Rail Fence]
-* [Substitution]
 * [Atbash]
 
 ## Gotchas
@@ -384,28 +383,6 @@ julia> decrypt_railfence("WECRFACERDSOEE.LETNEAIVDEO", 3)
 "wearediscovered.fleeatonce"
 ```
 
-### Substitution cipher
-
-```julia
-julia> encrypt_substitution("Hello, this is plaintext", "abcdefghijklmnopqrstuvwxyz", "qwertyuiopasdfghjklzxcvbnm")
-"ITSSG, ZIOL OL HSQOFZTBZ"
-
-julia> encrypt_substitution("Hello, this is plaintext", "qwertyuiopasdfghjklzxcvbnm")
-"ITSSG, ZIOL OL HSQOFZTBZ"
-
-julia> encrypt_substitution("xyz", Dict('x' => 'd', 'y' => 'e', 'z' => 't'))
-"DET"
-
-julia> decrypt_substitution("ITSSG, ZIOL OL HSQOFZTBZ", "abcdefghijklmnopqrstuvwxyz", "qwertyuiopasdfghjklzxcvbnm", reverse_dict = true)
-"hello, this is plaintext"
-
-julia> encrypt_atbash("some text", "abcdefghijklmnopqrstuvwxyz")
-"HLNV GVCG"
-
-julia> decrypt_atbash("HLNV GVCG", "abcdefghijklmnopqrstuvwxyz")
-"some text"
-```
-
 ### Atbash
 
 ```julia
@@ -422,5 +399,4 @@ encrypt_atbash("hello this is plaintext", "abcdefghijklmnopqrstuvwxyz") == encry
 [Playfair]: https://en.wikipedia.org/wiki/Playfair_cipher
 [Enigma]: https://en.wikipedia.org/wiki/Enigma_machine
 [Rail Fence]: https://en.wikipedia.org/wiki/Rail_fence_cipher
-[Substitution]: https://en.wikipedia.org/wiki/Substitution_cipher
 [Atbash]: https://en.wikipedia.org/wiki/Atbash

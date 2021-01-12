@@ -10,7 +10,7 @@ Documenter.makedocs(
     sitename = "ClassicalCiphers Documentation",
     expandfirst = [],
     pages = [
-        "Index" => "index.md",
+        "Home" => "index.md",
         "Usage" => "usage.md"
     ]
 )

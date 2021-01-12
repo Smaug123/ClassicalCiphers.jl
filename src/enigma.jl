@@ -149,7 +149,7 @@ function encrypt_enigma(plaintext,
 	end
 
 	# validate reflector settings
-	reflector = keystr_to_dict(parse_reflector(reflector_id))
+	reflector = _keystr_to_dict(parse_reflector(reflector_id))
 
 	# sanitise plaintext
 	plaintext = uppercase(letters_only(plaintext))
@@ -162,11 +162,11 @@ function encrypt_enigma(plaintext,
 					 "VZBRGITYUPSDNHLXAWMJQOFECK"]
 	notches = Int[17,5,22,10,26]
 
-	rotor1 = keystr_to_dict(rotor_layouts[rotors[1]])
+	rotor1 = _keystr_to_dict(rotor_layouts[rotors[1]])
 	notch1 = notches[rotors[1]]
-	rotor2 = keystr_to_dict(rotor_layouts[rotors[2]])
+	rotor2 = _keystr_to_dict(rotor_layouts[rotors[2]])
 	notch2 = notches[rotors[2]]
-	rotor3 = keystr_to_dict(rotor_layouts[rotors[3]])
+	rotor3 = _keystr_to_dict(rotor_layouts[rotors[3]])
 	notch3 = notches[rotors[3]]
 
 	rotor1_inv = Dict{Char, Char}(Pair{Char, Char}[reverse(a) for a in rotor1])

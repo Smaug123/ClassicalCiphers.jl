@@ -31,3 +31,9 @@
 @test decrypt_monoalphabetic("PCSSI EPHL HL JSKHYECUE", "qwertyuiopasdfghjklzxcvbnm", "abcdefghijklmnopqrstuvwxyz"; reverse_dict = false) == "jvllh cjps ps qlrpfcvgc"
 @test decrypt_monoalphabetic("PCSSI EPHL HL JSKHYECUE", "qwertyuiopasdfghjklzxcvbnm", "abcdefghijklmnopqrstuvwxyz"; reverse_dict = true) == "hello this is plaintext"
 @test decrypt_monoalphabetic("ITSSG ZIOL OL HSQOFZTBZ", "abcdefghijklmnopqrstuvwxyz", "qwertyuiopasdfghjklzxcvbnm"; reverse_dict = false) != decrypt_monoalphabetic("ITSSG ZIOL OL HSQOFZTBZ", "abcdefghijklmnopqrstuvwxyz", "qwertyuiopasdfghjklzxcvbnm"; reverse_dict = true)
+
+@test (
+	RID = encrypt_monoalphabetic("hello there", "mnbvcxzlkjhgfdsapoiuytrewq");
+	crack_monoalphabetic(RID) == ("gessi ngere", "INZYCDLPSFVKAUMJHOGRBTEQXW")
+	crack_monoalphabetic("93ee90299") == ("93ee90299", "XQJFEPHRBLTNKDCWVGAZMSIYOU")
+	)

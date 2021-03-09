@@ -2,6 +2,7 @@ _keystr_to_dict(keystr::AbstractString) =
     Dict{Char, Char}(Char(i + 64) => c for (i, c) in enumerate(uppercase(keystr)))
 _keystr_to_dict(A::AbstractString, B::AbstractString) =
     Dict{eltype(A), eltype(B)}(a => b for (a, b) in zip(uppercase(A), uppercase(B))) # policy decision: all dictionaries are uppercase
+
 Base.reverse(D::Dict{T, S}) where {T, S} =
     Dict{S, T}(reverse(p) for p in D)
 _monoalphabetic_substitution(text, sub_dict::Dict{T, S}) where {T, S} =
@@ -125,7 +126,7 @@ function swap_two(str)
         indices = rand(1:length(str), 2)
     end
 
-    return join(Integer[i == indices[1] ? str[indices[2]] : (i == indices[2] ? str[indices[1]] : str[i]) for i in 1:length(str)])
+    return join(Char[i == indices[1] ? str[indices[2]] : (i == indices[2] ? str[indices[1]] : str[i]) for i in 1:length(str)])
 end
 
 """
@@ -171,10 +172,10 @@ julia> crack_monoalphabetic(str, chatty=0, rounds=10)
 """
 function crack_monoalphabetic(
     ciphertext;
-    starting_key::AbstractString = "",
-    min_temp::AbstractFloat = 0.0001,
-    temp_factor::AbstractFloat = 0.97,
-    acceptance_prob::AbstractFloat = ((e,ep,t) -> ep > e ? 1. : exp(-(e-ep)/t)),
+    starting_key::AbstractString = string(),
+    min_temp::Union{AbstractFloat, Integer} = 0.0001,
+    temp_factor::Union{AbstractFloat, Integer} = 0.97,
+    acceptance_prob::Function = ((e,ep,t) -> ep > e ? 1. : exp(-(e-ep)/t)),
     chatty::Integer = 0,
     rounds::Integer = 1
 )
@@ -198,64 +199,64 @@ function crack_monoalphabetic(
         key = join(start_key)
     else
         key = starting_key
-        end
+    end
+    
+    if chatty > 1
+        println("Starting key: $(key)")
+    end
 
-        if chatty > 1
-            println("Starting key: $(key)")
-        end
+    stripped_ciphertext = letters_only(ciphertext)
+    fitness = string_fitness(decrypt_monoalphabetic(stripped_ciphertext, key))
+    total_best_fitness, total_best_key = fitness, key
+    total_best_decrypt = decrypt_monoalphabetic(ciphertext, key)
 
-        stripped_ciphertext = letters_only(ciphertext)
-        fitness = string_fitness(decrypt_monoalphabetic(stripped_ciphertext, key))
-        total_best_fitness, total_best_key = fitness, key
-        total_best_decrypt = decrypt_monoalphabetic(ciphertext, key)
-
-        for roundcount in 1:rounds
-            temp = 10^((roundcount - 1) / rounds)
-            while temp > min_temp
-                for i in 1:round(Int, min(ceil(1 / temp), 10))
-                    neighbour = swap_two(key)
-                    new_fitness = string_fitness(decrypt_monoalphabetic(stripped_ciphertext, neighbour), alreadystripped = true)
-                    if new_fitness > total_best_fitness
-                        total_best_fitness = new_fitness
-                        total_best_key = neighbour
-                        total_best_decrypt = decrypt_monoalphabetic(ciphertext, total_best_key)
-                    end
-
-                    threshold = rand()
-
-                    if chatty >= 2
-                        println("Current fitness: $(fitness)")
-                        println("New fitness: $(new_fitness)")
-                        println("Acceptance probability: $(acceptance_prob(fitness, new_fitness, temp))")
-                        println("Threshold: $(threshold)")
-                    end
-
-                    if acceptance_prob(fitness, new_fitness, temp) >= threshold
-                        if chatty >= 1
-                            println("$(key) -> $(neighbour), threshold $(threshold), temperature $(temp), fitness $(new_fitness), prob $(acceptance_prob(fitness, new_fitness, temp))")
-                        end
-                        fitness = new_fitness
-                        key = neighbour
-                    end
+    for roundcount in 1:rounds
+        temp = 10^((roundcount - 1) / rounds)
+        while temp > min_temp
+            for i in 1:round(Int, min(ceil(1 / temp), 10))
+                neighbour = swap_two(key)
+                new_fitness = string_fitness(decrypt_monoalphabetic(stripped_ciphertext, neighbour), alreadystripped = true)
+                if new_fitness > total_best_fitness
+                    total_best_fitness = new_fitness
+                    total_best_key = neighbour
+                    total_best_decrypt = decrypt_monoalphabetic(ciphertext, total_best_key)
                 end
-
-                temp = temp * temp_factor
+                
+                threshold = rand()
 
                 if chatty >= 2
-                    println("----")
+                    println("Current fitness: $(fitness)")
+                    println("New fitness: $(new_fitness)")
+                    println("Acceptance probability: $(acceptance_prob(fitness, new_fitness, temp))")
+                    println("Threshold: $(threshold)")
+                end
+
+                if acceptance_prob(fitness, new_fitness, temp) >= threshold
+                    if chatty >= 1
+                        println("$(key) -> $(neighbour), threshold $(threshold), temperature $(temp), fitness $(new_fitness), prob $(acceptance_prob(fitness, new_fitness, temp))")
+                    end
+                    fitness = new_fitness
+                    key = neighbour
                 end
             end
 
-            key, fitness = total_best_key, total_best_fitness
-            temp = 1
+            temp = temp * temp_factor
+
+            if chatty >= 2
+                println("----")
+            end
         end
 
-        if chatty >= 1
-            println("Best was $(total_best_key) at $(total_best_fitness)")
-            println(total_best_decrypt)
-        end
-        
-        return decrypt_monoalphabetic(ciphertext, key), key
+        key, fitness = total_best_key, total_best_fitness
+        temp = 1
+    end
+
+    if chatty >= 1
+        println("Best was $(total_best_key) at $(total_best_fitness)")
+        println(total_best_decrypt)
+    end
+    
+    return decrypt_monoalphabetic(ciphertext, key), key
 end
 
 """

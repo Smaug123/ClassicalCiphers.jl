@@ -34,6 +34,6 @@
 
 @test (
 	RID = encrypt_monoalphabetic("hello there", "mnbvcxzlkjhgfdsapoiuytrewq");
-	crack_monoalphabetic(RID) == ("gessi ngere", "INZYCDLPSFVKAUMJHOGRBTEQXW")
-	crack_monoalphabetic("93ee90299") == ("93ee90299", "XQJFEPHRBLTNKDCWVGAZMSIYOU")
+	crack_monoalphabetic(RID) == ("gessi ngere", "INZYCDLPSFVKAUMJHOGRBTEQXW");
+	crack_monoalphabetic("93ee90299") == ("93ee90299", "XQJFEPHRBLTNKDCWVGAZMSIYOU");
 	)

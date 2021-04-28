@@ -36,5 +36,6 @@
 	RID = encrypt_monoalphabetic("hello there", "mnbvcxzlkjhgfdsapoiuytrewq");
 	crack_monoalphabetic(RID) == ("gessi ngere", "INZYCDLPSFVKAUMJHOGRBTEQXW");
 	crack_monoalphabetic("93ee90299") == ("93ee90299", "XQJFEPHRBLTNKDCWVGAZMSIYOU");
-    crack_monoalphabetic("93ee90299"; chatty = 2) == ("93ee90299", "XQJFEPHRBLTNKDCWVGAZMSIYOU"); # for code coverage reasons!
+	io = IOBuffer();
+    crack_monoalphabetic(io, "93ee90299"; chatty = 2) == ("93ee90299", "XQJFEPHRBLTNKDCWVGAZMSIYOU"); # for code coverage reasons!
 	)

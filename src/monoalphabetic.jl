@@ -132,6 +132,7 @@ end
 """
 ```julia
 crack_monoalphabetic(
+    io::IO,
     ciphertext;
     starting_key::AbstractString = "",
     min_temp::AbstractFloat = 0.0001,
@@ -171,6 +172,7 @@ julia> crack_monoalphabetic(str, chatty=0, rounds=10)
 ```
 """
 function crack_monoalphabetic(
+    io::IO,
     ciphertext;
     starting_key::AbstractString = string(),
     min_temp::Union{AbstractFloat, Integer} = 0.0001,
@@ -202,7 +204,7 @@ function crack_monoalphabetic(
     end
     
     if chatty > 1
-        println("Starting key: $(key)")
+        println(io, "Starting key: $(key)")
     end
 
     stripped_ciphertext = letters_only(ciphertext)
@@ -225,15 +227,15 @@ function crack_monoalphabetic(
                 threshold = rand()
 
                 if chatty >= 2
-                    println("Current fitness: $(fitness)")
-                    println("New fitness: $(new_fitness)")
-                    println("Acceptance probability: $(acceptance_prob(fitness, new_fitness, temp))")
-                    println("Threshold: $(threshold)")
+                    println(io, "Current fitness: $(fitness)")
+                    println(io, "New fitness: $(new_fitness)")
+                    println(io, "Acceptance probability: $(acceptance_prob(fitness, new_fitness, temp))")
+                    println(io, "Threshold: $(threshold)")
                 end
 
                 if acceptance_prob(fitness, new_fitness, temp) >= threshold
                     if chatty >= 1
-                        println("$(key) -> $(neighbour), threshold $(threshold), temperature $(temp), fitness $(new_fitness), prob $(acceptance_prob(fitness, new_fitness, temp))")
+                        println(io, "$(key) -> $(neighbour), threshold $(threshold), temperature $(temp), fitness $(new_fitness), prob $(acceptance_prob(fitness, new_fitness, temp))")
                     end
                     fitness = new_fitness
                     key = neighbour
@@ -243,7 +245,7 @@ function crack_monoalphabetic(
             temp = temp * temp_factor
 
             if chatty >= 2
-                println("----")
+                println(io, "----")
             end
         end
 
@@ -252,11 +254,73 @@ function crack_monoalphabetic(
     end
 
     if chatty >= 1
-        println("Best was $(total_best_key) at $(total_best_fitness)")
-        println(total_best_decrypt)
+        println(io, "Best was $(total_best_key) at $(total_best_fitness)")
+        println(io, total_best_decrypt)
     end
     
     return decrypt_monoalphabetic(ciphertext, key), key
+end
+
+"""
+```julia
+crack_monoalphabetic(
+    ciphertext;
+    starting_key::AbstractString = "",
+    min_temp::AbstractFloat = 0.0001,
+    temp_factor::AbstractFloat = 0.97,
+    acceptance_prob::AbstractFloat = ((e,ep,t) -> ep > e ? 1. : exp(-(e-ep)/t)),
+    chatty::Integer = 0,
+    rounds::Integer = 1
+)
+```
+
+crack_monoalphabetic cracks the given ciphertext which was encrypted by the monoalphabetic
+substitution cipher.
+
+Returns `(the derived key, decrypted plaintext)`.
+
+The various optional arguments to `crack_monoalphabetic` are:
+* `starting_key=""`, which when specified (for example, as "ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+  starts the simulation at the given key. The default causes it to start with the most
+  common characters being decrypted to the most common English characters.
+* `min_temp=0.0001`, which is the temperature at which we stop the simulation.
+* `temp_factor=0.97`, which is the factor by which the temperature decreases each step.
+* `chatty=0`, which can be set to 1 to print whenever the key is updated, or 2 to print
+  whenever any new key is considered (prints to `stdout`).
+* `rounds=1`, which sets the number of repetitions we perform. Each round starts with the
+  best key we've found so far.
+* `acceptance_prob=((e, ep, t) -> ep>e ? 1 : exp(-(e-ep)/t))`, which is the probability
+  with which we accept new key of fitness ep, given that the current key has fitness e,
+  at temperature t.
+
+---
+
+### Examples
+
+```julia
+julia> crack_monoalphabetic(str, chatty=0, rounds=10)
+(decrypted_string, key)
+```
+"""
+function crack_monoalphabetic(
+    ciphertext;
+    starting_key::AbstractString = string(),
+    min_temp::Union{AbstractFloat, Integer} = 0.0001,
+    temp_factor::Union{AbstractFloat, Integer} = 0.97,
+    acceptance_prob::Function = ((e,ep,t) -> ep > e ? 1. : exp(-(e-ep)/t)),
+    chatty::Integer = 0,
+    rounds::Integer = 1
+)
+    return crack_monoalphabetic(
+        stdout, # default to stdout
+        ciphertext;
+        starting_key = starting_key,
+        min_temp = min_temp,
+        temp_factor = temp_factor,
+        acceptance_prob = acceptance_prob,
+        chatty = chatty,
+        rounds = rounds
+    )
 end
 
 """

@@ -2,6 +2,7 @@ include(joinpath(dirname(@__DIR__), "src", "ClassicalCiphers.jl")); using .Class
 using Test
 
 tests = [
+         "common",
          "playfair",
          "vigenere",
          "monoalphabetic",

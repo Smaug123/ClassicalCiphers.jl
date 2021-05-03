@@ -72,15 +72,7 @@ function string_fitness(input::AbstractString; alreadystripped::Bool = false)
     return log(ans / length(str))
 end
 
-"""
-```julia
-frequencies(input::AbstractString)
-```
-
-Finds the frequencies of all characters in the input string, returning a `Dict`
-of `'a' => 4`, for instance. Uppercase characters are considered distinct from lowercase.
-"""
-function frequencies(input::AbstractString)
+function _frequencies_internal(input::AbstractString)
     ans = Dict{Char, Int}()
     for c in input
         index = Base.ht_keyindex2!(ans, c)
@@ -95,14 +87,37 @@ end
 
 """
 ```julia
+frequencies(input::AbstractString)
+```
+
+Finds the frequencies of all characters in the input string, returning a `Dict`
+of `'a' => 4`, for instance. Uppercase characters are considered distinct from lowercase.
+"""
+function frequencies(input::AbstractString)
+    ans = Dict{Char, Int}()
+    for c in input
+        index = Base.ht_keyindex2!(ans, c)
+        if index > 1
+            @inbounds ans.vals[index] += 1
+        else
+            @inbounds Base._setindex!(ans, 1, c, -index)
+        end
+    end
+    return ans
+end
+
+"""
+```julia
 index_of_coincidence(input::AbstractString)
 ```
 
 Finds the index of coincidence of the input string. Uppercase characters are considered to be
 equal to their lowercase counterparts.
+
+See [issue 32](https://github.com/Smaug123/ClassicalCiphers.jl/issues/32) for an important note on this.
 """
 function index_of_coincidence(input::AbstractString)
-    freqs = frequencies(lowercase(letters_only(input)))
+    freqs = _frequencies_internal(lowercase(letters_only(input)))
     len = length(lowercase(letters_only(input)))
 
     ans = 0

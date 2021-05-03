@@ -3,30 +3,18 @@ function letters_only(text::AbstractString)
     return filter(x -> ('A' <= x <= 'Z' || 'a' <= x <= 'z'), text)
 end
 
-function rotate_right(arr::AbstractVector, n::Integer)
-    # implementation of the Mathematica function rotate_right - or you could try circshift()?
-    ans = copy(arr)
-    for i in 1:length(arr)
-        ans[i] = arr[((2*length(ans)+i-n-1) % length(ans)) + 1]
-    end
-    
-    return ans
+rotate_left(arr::AbstractVector, n::Integer) = circshift(arr, -n)
+rotate_right(arr::AbstractVector, n::Integer) = circshift(arr, n)
+
+function rotate_string(str::AbstractString, n::Integer)
+    i = mod(n, length(str))
+    return str[i+1:end] * str[1:i]
 end
 
-function rotate_left(arr::AbstractVector, n::Integer)
-    # implementation of the Mathematica function rotate_left
-    ans = copy(arr)
-    for i in 1:length(arr)
-        ans[i] = arr[((i + n - 1) % length(ans)) + 1]
-    end
-    
-    return ans
-end
-
-rotate_left_str(st::AbstractString, n::Integer) =
-    join(rotate_left(collect(st), n))
-rotate_right_str(st::AbstractString, n::Integer) =
-    join(rotate_right(collect(st), n))
+rotate_left(str::AbstractString, n::Integer) =
+    rotate_string(str, n)
+rotate_right(str::AbstractString, n::Integer) =
+    rotate_string(str, -n)
 
 function split_by(arr::AbstractVector, func::Function)
     # implementation of the Mathematica function split_by

@@ -185,7 +185,7 @@ function crack_monoalphabetic(
     if isempty(starting_key)
         # most common letters
         commonest = "ETAOINSHRDLUMCYWFGBPVKZJXQ"
-        freqs = frequencies(uppercase(letters_only(ciphertext)))
+        freqs = _frequencies_internal(uppercase(letters_only(ciphertext)))
         for c in 'A':'Z'
             if !haskey(freqs, c)
                 freqs[c] = 0
